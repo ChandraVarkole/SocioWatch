@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AWS_Company_Id__c</fullName>
+    <description>
+        SocioWatch company identifier returned by the AWS settings API.
+        This value is not an authentication credential.
+    </description>
+    <externalId>true</externalId>
+    <label>AWS Company ID</label>
+    <length>100</length>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <type>Text</type>
+    <unique>true</unique>
+</CustomField>

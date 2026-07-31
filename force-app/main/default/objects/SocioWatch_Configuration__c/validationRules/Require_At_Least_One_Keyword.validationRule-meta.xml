@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Require_At_Least_One_Keyword</fullName>
+    <active>true</active>
+    <description>
+        Requires at least one non-whitespace keyword.
+    </description>
+    <errorConditionFormula>
+        LEN(TRIM(Keywords__c)) = 0
+    </errorConditionFormula>
+    <errorDisplayField>Keywords__c</errorDisplayField>
+    <errorMessage>Enter at least one keyword.</errorMessage>
+</ValidationRule>

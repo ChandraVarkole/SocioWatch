@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Prevent_Completed_Status_Without_Sync_Date</fullName>
+    <active>true</active>
+    <description>
+        A successful sync must include its completion date and time.
+    </description>
+    <errorConditionFormula>
+        AND(
+            ISPICKVAL(Last_Sync_Status__c, "Success"),
+            ISBLANK(Last_Successful_Sync__c)
+        )
+    </errorConditionFormula>
+    <errorMessage>
+        Enter the last successful sync date when the status is Success.
+    </errorMessage>
+</ValidationRule>
