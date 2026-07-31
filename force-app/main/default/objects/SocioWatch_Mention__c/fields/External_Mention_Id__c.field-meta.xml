@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>External_Mention_Id__c</fullName>
+    <description>
+        Unique mention identifier received from SocioWatch. Used for idempotent upsert and duplicate prevention.
+    </description>
+    <externalId>true</externalId>
+    <label>External Mention ID</label>
+    <length>150</length>
+    <required>true</required>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>true</unique>
+</CustomField>

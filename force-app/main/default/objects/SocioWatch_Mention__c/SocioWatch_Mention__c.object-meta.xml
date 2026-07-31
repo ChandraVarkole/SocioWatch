@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>
+        Stores actionable online mentions synchronized from the SocioWatch platform.
+        Complete historical mention data remains in the SocioWatch AWS platform.
+    </description>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>false</enableStreamingApi>
+    <externalSharingModel>Private</externalSharingModel>
+    <label>SocioWatch Mention</label>
+    <nameField>
+        <displayFormat>SWM-{000000}</displayFormat>
+        <label>Mention Number</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>SocioWatch Mentions</pluralLabel>
+    <sharingModel>Private</sharingModel>
+</CustomObject>

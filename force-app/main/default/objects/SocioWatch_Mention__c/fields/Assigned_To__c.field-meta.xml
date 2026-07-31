@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Assigned_To__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>
+        Salesforce user responsible for reviewing or responding to the mention.
+    </description>
+    <label>Assigned To</label>
+    <referenceTo>User</referenceTo>
+    <relationshipLabel>Assigned SocioWatch Mentions</relationshipLabel>
+    <relationshipName>Assigned_SocioWatch_Mentions</relationshipName>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <type>Lookup</type>
+</CustomField>

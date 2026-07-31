@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Configuration__c</fullName>
+    <deleteConstraint>Restrict</deleteConstraint>
+    <description>
+        SocioWatch configuration associated with this mention.
+    </description>
+    <label>SocioWatch Configuration</label>
+    <referenceTo>SocioWatch_Configuration__c</referenceTo>
+    <relationshipLabel>SocioWatch Mentions</relationshipLabel>
+    <relationshipName>SocioWatch_Mentions</relationshipName>
+    <required>true</required>
+    <trackHistory>false</trackHistory>
+    <type>Lookup</type>
+</CustomField>
