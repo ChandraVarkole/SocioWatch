@@ -1,0 +1,33 @@
+# Salesforce
+.sf/
+.sfdx/
+.localdevserver/
+.vscode/
+coverage/
+test-results/
+
+# Secrets and environment files
+.env
+.env.*
+*.key
+*.pem
+*.crt
+*.p12
+*.jks
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Generated reports
+reports/*.json
+reports/*.html
+reports/*.csv
+
+# Temporary files
+*.log
+*.tmp
