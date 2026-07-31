@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
+
+    <labels>
+        <fullName>SocioWatch_App_Name</fullName>
+        <categories>SocioWatch</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>SocioWatch application name</shortDescription>
+        <value>SocioWatch</value>
+    </labels>
+
+    <labels>
+        <fullName>SocioWatch_Tagline</fullName>
+        <categories>SocioWatch</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>SocioWatch product tagline</shortDescription>
+        <value>Mentions Converted into Intelligence</value>
+    </labels>
+
+    <labels>
+        <fullName>SocioWatch_Settings_Title</fullName>
+        <categories>SocioWatch</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Settings page title</shortDescription>
+        <value>SocioWatch Settings</value>
+    </labels>
+
+    <labels>
+        <fullName>SocioWatch_Settings_Description</fullName>
+        <categories>SocioWatch</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Settings page description</shortDescription>
+        <value>Configure your company, tracked keywords, alert identifier, and synchronization settings.</value>
+    </labels>
+
+    <labels>
+        <fullName>SocioWatch_Company_Name</fullName>
+        <categories>SocioWatch</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Company name field label</shortDescription>
+        <value>Company Name</value>
+    </labels>
+
+    <labels>
+        <fullName>SocioWatch_Keywords</fullName>
+        <categories>SocioWatch</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Keywords field label</shortDescription>
+        <value>Keywords</value>
+    </labels>
+
+    <labels>
+        <fullName>SocioWatch_Alert_Id</fullName>
+        <categories>SocioWatch</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Alert identifier field label</shortDescription>
+        <value>Alert ID</value>
+    </labels>
+
+    <labels>
+        <fullName>SocioWatch_Sync_Enabled</fullName>
+        <categories>SocioWatch</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Synchronization enabled field label</shortDescription>
+        <value>Enable Synchronization</value>
+    </labels>
+
+    <labels>
+        <fullName>SocioWatch_Save</fullName>
+        <categories>SocioWatch</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Save button label</shortDescription>
+        <value>Save</value>
+    </labels>
+
+    <labels>
+        <fullName>SocioWatch_Sync_Now</fullName>
+        <categories>SocioWatch</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Manual synchronization button label</shortDescription>
+        <value>Sync Now</value>
+    </labels>
+
+    <labels>
+        <fullName>SocioWatch_Save_Success</fullName>
+        <categories>SocioWatch</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Successful settings save message</shortDescription>
+        <value>SocioWatch settings were saved successfully.</value>
+    </labels>
+
+    <labels>
+        <fullName>SocioWatch_Sync_Success</fullName>
+        <categories>SocioWatch</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Successful synchronization message</shortDescription>
+        <value>SocioWatch synchronization completed successfully.</value>
+    </labels>
+
+    <labels>
+        <fullName>SocioWatch_Unexpected_Error</fullName>
+        <categories>SocioWatch</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Generic safe error message</shortDescription>
+        <value>An unexpected error occurred. Contact your Salesforce administrator if the problem continues.</value>
+    </labels>
+
+    <labels>
+        <fullName>SocioWatch_Access_Denied</fullName>
+        <categories>SocioWatch</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Access denied message</shortDescription>
+        <value>You do not have permission to perform this SocioWatch operation.</value>
+    </labels>
+
+    <labels>
+        <fullName>SocioWatch_Invalid_Configuration</fullName>
+        <categories>SocioWatch</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Invalid configuration message</shortDescription>
+        <value>The SocioWatch configuration is incomplete or invalid.</value>
+    </labels>
+
+    <labels>
+        <fullName>SocioWatch_No_Mentions</fullName>
+        <categories>SocioWatch</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>No mentions available message</shortDescription>
+        <value>No actionable mentions are currently available.</value>
+    </labels>
+
+    <labels>
+        <fullName>SocioWatch_Chat_Title</fullName>
+        <categories>SocioWatch</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>AI chat page title</shortDescription>
+        <value>SocioWatch Intelligence Chat</value>
+    </labels>
+
+    <labels>
+        <fullName>SocioWatch_Chat_Placeholder</fullName>
+        <categories>SocioWatch</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>AI chat input placeholder</shortDescription>
+        <value>Ask a question about your company's mentions and customer feedback.</value>
+    </labels>
+
+</CustomLabels>
