@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
+    <brand>
+        <headerColor>#6557E8</headerColor>
+        <shouldOverrideOrgTheme>true</shouldOverrideOrgTheme>
+    </brand>
+
+    <description>
+        Monitor actionable brand mentions, manage SocioWatch settings,
+        synchronize data, and ask questions through AI chat.
+    </description>
+
+    <formFactors>Large</formFactors>
+    <formFactors>Small</formFactors>
+
+    <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
+    <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
+    <isNavTabPersistenceDisabled>false</isNavTabPersistenceDisabled>
+
+    <label>SocioWatch</label>
+    <navType>Standard</navType>
+
+    <tabs>standard-home</tabs>
+    <tabs>SocioWatch_Mention__c</tabs>
+    <tabs>SocioWatch_Chat</tabs>
+    <tabs>SocioWatch_Settings</tabs>
+
+    <uiType>Lightning</uiType>
+</CustomApplication>

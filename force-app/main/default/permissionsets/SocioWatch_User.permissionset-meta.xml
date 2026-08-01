@@ -182,4 +182,10 @@
         <enabled>true</enabled>
     </classAccesses>
 
+
+    <tabSettings>
+        <tab>SocioWatch_Configuration__c</tab>
+        <visibility>None</visibility>
+    </tabSettings>
+
 </PermissionSet>
