@@ -10,6 +10,9 @@ import getSettings from
 import saveSettings from
     '@salesforce/apex/SocioWatchSettingsController.saveSettings';
 
+import startSync from
+    '@salesforce/apex/SocioWatchSyncController.startSync';
+
 import SETTINGS_TITLE from
     '@salesforce/label/c.SocioWatch_Settings_Title';
 
@@ -33,6 +36,12 @@ import SAVE from
 
 import SAVE_SUCCESS from
     '@salesforce/label/c.SocioWatch_Save_Success';
+
+import SYNC_NOW from
+    '@salesforce/label/c.SocioWatch_Sync_Now';
+
+import SYNC_SUCCESS from
+    '@salesforce/label/c.SocioWatch_Sync_Success';
 
 import ACCESS_DENIED from
     '@salesforce/label/c.SocioWatch_Access_Denied';
@@ -60,6 +69,7 @@ export default class SocioWatchSettings extends LightningElement {
     hasAccess = false;
     isLoading = true;
     isSaving = false;
+    isSyncing = false;
 
     labels = {
         settingsTitle: SETTINGS_TITLE,
@@ -70,6 +80,8 @@ export default class SocioWatchSettings extends LightningElement {
         syncEnabled: SYNC_ENABLED,
         save: SAVE,
         saveSuccess: SAVE_SUCCESS,
+        syncNow: SYNC_NOW,
+        syncSuccess: SYNC_SUCCESS,
         accessDenied: ACCESS_DENIED,
         unexpectedError: UNEXPECTED_ERROR
     };
@@ -83,7 +95,24 @@ export default class SocioWatchSettings extends LightningElement {
     }
 
     get isSaveDisabled() {
-        return this.isLoading || this.isSaving || !this.hasAccess;
+        return (
+            this.isLoading ||
+            this.isSaving ||
+            this.isSyncing ||
+            !this.hasAccess
+        );
+    }
+
+    get isSyncDisabled() {
+        return (
+            this.isLoading ||
+            this.isSaving ||
+            this.isSyncing ||
+            !this.hasAccess ||
+            !this.configurationId ||
+            !this.companyId ||
+            !this.syncEnabled
+        );
     }
 
     async initialize() {
@@ -178,6 +207,28 @@ export default class SocioWatchSettings extends LightningElement {
             this.showError(error);
         } finally {
             this.isSaving = false;
+        }
+    }
+
+    async handleSync() {
+        this.isSyncing = true;
+
+        try {
+            await startSync();
+
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: 'Sync Started',
+                    message: this.labels.syncSuccess,
+                    variant: 'success'
+                })
+            );
+
+            this.lastSyncStatus = 'In Progress';
+        } catch (error) {
+            this.showError(error);
+        } finally {
+            this.isSyncing = false;
         }
     }
 

@@ -199,4 +199,10 @@
         <field>SocioWatch_Mention__c.Title__c</field>
         <readable>true</readable>
     </fieldPermissions>
+
+    <classAccesses>
+        <apexClass>SocioWatchSyncController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+
 </PermissionSet>

@@ -144,6 +144,14 @@
 
                 <div class="button-container">
                     <lightning-button
+                        variant="neutral"
+                        label={labels.syncNow}
+                        disabled={isSyncDisabled}
+                        onclick={handleSync}
+                    >
+                    </lightning-button>
+
+                    <lightning-button
                         variant="brand"
                         label={labels.save}
                         disabled={isSaveDisabled}
