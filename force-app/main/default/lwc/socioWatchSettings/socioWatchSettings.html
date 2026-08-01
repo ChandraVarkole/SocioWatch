@@ -1,0 +1,157 @@
+<template>
+    <lightning-card
+        title={labels.settingsTitle}
+        icon-name="standard:settings"
+    >
+        <template if:true={isLoading}>
+            <lightning-spinner
+                alternative-text="Loading SocioWatch settings"
+                size="medium"
+            >
+            </lightning-spinner>
+        </template>
+
+        <div class="slds-p-horizontal_medium slds-p-bottom_medium">
+            <template if:false={hasAccess}>
+                <div
+                    class="slds-notify slds-notify_alert
+                        slds-alert_error"
+                    role="alert"
+                >
+                    <span class="slds-assistive-text">
+                        Error
+                    </span>
+
+                    <h2>
+                        {labels.accessDenied}
+                    </h2>
+                </div>
+            </template>
+
+            <template if:true={hasAccess}>
+                <p class="slds-text-body_regular description">
+                    {labels.settingsDescription}
+                </p>
+
+                <div class="form-container">
+                    <lightning-input
+                        data-field="companyName"
+                        type="text"
+                        name="companyName"
+                        label={labels.companyName}
+                        value={companyName}
+                        maxlength="255"
+                        required
+                        disabled={isSaving}
+                        onchange={handleCompanyNameChange}
+                    >
+                    </lightning-input>
+
+                    <lightning-textarea
+                        data-field="keywords"
+                        name="keywords"
+                        label={labels.keywords}
+                        value={keywordsText}
+                        maxlength="32768"
+                        required
+                        disabled={isSaving}
+                        message-when-value-missing=
+                            "Enter at least one keyword."
+                        onchange={handleKeywordsChange}
+                    >
+                    </lightning-textarea>
+
+                    <p class="field-help">
+                        Enter one keyword per line. You can configure
+                        up to 20 keywords.
+                    </p>
+
+                    <lightning-input
+                        data-field="alertId"
+                        type="text"
+                        name="alertId"
+                        label={labels.alertId}
+                        value={alertId}
+                        maxlength="255"
+                        required
+                        disabled={isSaving}
+                        onchange={handleAlertIdChange}
+                    >
+                    </lightning-input>
+
+                    <lightning-input
+                        type="toggle"
+                        name="syncEnabled"
+                        label={labels.syncEnabled}
+                        checked={syncEnabled}
+                        disabled={isSaving}
+                        onchange={handleSyncEnabledChange}
+                    >
+                    </lightning-input>
+                </div>
+
+                <template if:true={hasSavedConfiguration}>
+                    <section
+                        class="configuration-summary"
+                        aria-labelledby="configuration-summary-heading"
+                    >
+                        <h3
+                            id="configuration-summary-heading"
+                            class="slds-text-heading_small"
+                        >
+                            Configuration Details
+                        </h3>
+
+                        <dl class="summary-grid">
+                            <div>
+                                <dt>Configuration</dt>
+                                <dd>{configurationNumber}</dd>
+                            </div>
+
+                            <div>
+                                <dt>SocioWatch Company ID</dt>
+                                <dd>{companyId}</dd>
+                            </div>
+
+                            <div>
+                                <dt>Last Sync Status</dt>
+                                <dd>{lastSyncStatus}</dd>
+                            </div>
+
+                            <div>
+                                <dt>Last Successful Sync</dt>
+                                <dd>
+                                    <template if:true={lastSuccessfulSync}>
+                                        <lightning-formatted-date-time
+                                            value={lastSuccessfulSync}
+                                            year="numeric"
+                                            month="short"
+                                            day="2-digit"
+                                            hour="2-digit"
+                                            minute="2-digit"
+                                        >
+                                        </lightning-formatted-date-time>
+                                    </template>
+
+                                    <template if:false={lastSuccessfulSync}>
+                                        Not available
+                                    </template>
+                                </dd>
+                            </div>
+                        </dl>
+                    </section>
+                </template>
+
+                <div class="button-container">
+                    <lightning-button
+                        variant="brand"
+                        label={labels.save}
+                        disabled={isSaveDisabled}
+                        onclick={handleSave}
+                    >
+                    </lightning-button>
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>

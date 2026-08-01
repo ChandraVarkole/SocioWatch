@@ -1,0 +1,69 @@
+:host {
+    display: block;
+}
+
+.description {
+    max-width: 48rem;
+    color: var(--lwc-colorTextWeak, #444);
+}
+
+.form-container {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    max-width: 48rem;
+}
+
+.field-help {
+    margin-top: -0.75rem;
+    color: var(--lwc-colorTextWeak, #444);
+    font-size: 0.75rem;
+}
+
+.button-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1.5rem;
+    max-width: 48rem;
+}
+
+.configuration-summary {
+    margin-top: 2rem;
+    max-width: 48rem;
+    padding: 1rem;
+    border: 1px solid
+        var(--lwc-colorBorder, #c9c9c9);
+    border-radius: 0.25rem;
+    background:
+        var(--lwc-colorBackgroundAlt, #ffffff);
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fit, minmax(12rem, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.summary-grid dt {
+    color: var(--lwc-colorTextWeak, #444);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.summary-grid dd {
+    margin: 0.25rem 0 0;
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 48rem) {
+    .button-container {
+        justify-content: stretch;
+    }
+
+    .button-container lightning-button {
+        width: 100%;
+    }
+}
