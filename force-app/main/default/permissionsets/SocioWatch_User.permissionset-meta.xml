@@ -176,4 +176,10 @@
         <field>SocioWatch_Mention__c.Status__c</field>
         <readable>true</readable>
     </fieldPermissions>
+
+    <classAccesses>
+        <apexClass>SocioWatchChatController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+
 </PermissionSet>

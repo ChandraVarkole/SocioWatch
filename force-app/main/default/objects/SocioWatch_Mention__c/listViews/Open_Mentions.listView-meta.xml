@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Open_Mentions</fullName>
+    <columns>NAME</columns>
+    <columns>Title__c</columns>
+    <columns>Source__c</columns>
+    <columns>Sentiment__c</columns>
+    <columns>Priority__c</columns>
+    <columns>Status__c</columns>
+    <columns>Assigned_To__c</columns>
+    <columns>Mention_Date__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Status__c</field>
+        <operation>notEqual</operation>
+        <value>Resolved,Ignored</value>
+    </filters>
+    <label>Open Mentions</label>
+</ListView>

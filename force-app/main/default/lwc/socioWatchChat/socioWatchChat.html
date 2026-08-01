@@ -1,0 +1,59 @@
+<template>
+    <lightning-card
+        title={labels.title}
+        icon-name="standard:bot"
+    >
+        <div class="chat-container">
+            <div
+                class="messages"
+                role="log"
+                aria-live="polite"
+            >
+                <template if:false={hasMessages}>
+                    <p class="empty-message">
+                        Ask SocioWatch about customer sentiment,
+                        concerns, trends, or actionable feedback.
+                    </p>
+                </template>
+
+                <template for:each={messages} for:item="message">
+                    <div
+                        key={message.id}
+                        class={message.cssClass}
+                    >
+                        <strong>{message.sender}</strong>
+                        <p>{message.text}</p>
+                    </div>
+                </template>
+            </div>
+
+            <lightning-textarea
+                label="Question"
+                value={question}
+                placeholder={labels.placeholder}
+                maxlength="2000"
+                disabled={isLoading}
+                onchange={handleQuestionChange}
+            >
+            </lightning-textarea>
+
+            <div class="actions">
+                <lightning-button
+                    variant="brand"
+                    label="Ask SocioWatch"
+                    disabled={isAskDisabled}
+                    onclick={handleAsk}
+                >
+                </lightning-button>
+            </div>
+
+            <template if:true={isLoading}>
+                <lightning-spinner
+                    alternative-text="SocioWatch is preparing an answer"
+                    size="small"
+                >
+                </lightning-spinner>
+            </template>
+        </div>
+    </lightning-card>
+</template>

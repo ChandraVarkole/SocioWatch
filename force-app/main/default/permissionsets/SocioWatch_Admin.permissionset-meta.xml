@@ -205,4 +205,10 @@
         <enabled>true</enabled>
     </classAccesses>
 
+
+    <classAccesses>
+        <apexClass>SocioWatchChatController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+
 </PermissionSet>
