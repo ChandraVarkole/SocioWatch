@@ -5,13 +5,15 @@
 :root {
     --background: #f7f8fc;
     --surface: #ffffff;
-    --text: #171a24;
+    --text: #111936;
     --muted: #646a7a;
     --border: #e3e6ef;
 
-    --primary: #6557e8;
-    --primary-dark: #4d40c8;
-    --primary-light: #efedff;
+    --primary: #2359e8;
+    --primary-dark: #193fb5;
+    --primary-light: #eef3ff;
+    --accent: #6d31e8;
+    --cyan: #00b9d8;
 
     --positive: #16784f;
     --positive-light: #e9f8f1;
@@ -28,7 +30,6 @@ html {
 
 body {
     margin: 0;
-
     background: var(--background);
     color: var(--text);
 
@@ -59,35 +60,27 @@ body {
 }
 
 .navigation {
-    min-height: 72px;
+    min-height: 76px;
 
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 32px;
 }
 
 .brand {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 10px;
 
-    font-size: 18px;
-    font-weight: 750;
+    color: var(--text);
+    text-decoration: none;
 }
 
-.logo {
-    width: 36px;
-    height: 36px;
-
-    display: grid;
-    place-items: center;
-
-    border-radius: 12px;
-
-    background: var(--primary);
-    color: white;
-
-    font-weight: 800;
+.brand-logo {
+    display: block;
+    width: 250px;
+    max-width: 38vw;
+    height: auto;
 }
 
 nav {
@@ -99,7 +92,7 @@ nav a {
     color: var(--muted);
 
     font-size: 15px;
-    font-weight: 600;
+    font-weight: 650;
 
     text-decoration: none;
 }
@@ -114,8 +107,13 @@ nav a:hover {
     background:
         radial-gradient(
             circle at 85% 15%,
-            rgba(101, 87, 232, 0.16),
+            rgba(35, 89, 232, 0.15),
             transparent 32%
+        ),
+        radial-gradient(
+            circle at 10% 75%,
+            rgba(109, 49, 232, 0.08),
+            transparent 28%
         );
 }
 
@@ -150,13 +148,13 @@ h1 {
     max-width: 720px;
     margin-bottom: 24px;
 
-    font-size: clamp(46px, 7vw, 84px);
+    font-size: clamp(46px, 7vw, 82px);
     line-height: 0.98;
     letter-spacing: -0.055em;
 }
 
 h2 {
-    max-width: 780px;
+    max-width: 800px;
     margin-bottom: 42px;
 
     font-size: clamp(34px, 4vw, 52px);
@@ -164,19 +162,26 @@ h2 {
     letter-spacing: -0.035em;
 }
 
-.description {
-    max-width: 680px;
-    margin-bottom: 30px;
+.description,
+.section-description {
+    max-width: 700px;
+    margin-bottom: 22px;
 
     color: var(--muted);
 
     font-size: 18px;
 }
 
+.description-secondary {
+    font-size: 16px;
+}
+
 .hero-buttons {
     display: flex;
     flex-wrap: wrap;
     gap: 14px;
+
+    margin-top: 30px;
 }
 
 .button {
@@ -191,15 +196,24 @@ h2 {
 
     font-weight: 750;
     text-decoration: none;
+
+    transition:
+        transform 160ms ease,
+        background 160ms ease,
+        border-color 160ms ease;
+}
+
+.button:hover {
+    transform: translateY(-1px);
 }
 
 .primary {
-    background: var(--primary);
+    background: linear-gradient(135deg, var(--primary), var(--accent));
     color: white;
 }
 
 .primary:hover {
-    background: var(--primary-dark);
+    background: linear-gradient(135deg, var(--primary-dark), #5521c0);
 }
 
 .secondary {
@@ -207,6 +221,10 @@ h2 {
 
     background: var(--surface);
     color: var(--text);
+}
+
+.secondary:hover {
+    border-color: #c9cfdf;
 }
 
 .development-note {
@@ -345,7 +363,8 @@ h2 {
 
 .feature-grid p,
 .steps p,
-.contact p {
+.contact p,
+.integration-card p {
     color: var(--muted);
 }
 
@@ -364,6 +383,56 @@ h2 {
 
     font-size: 13px;
     font-weight: 850;
+}
+
+.integrations-layout {
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    align-items: start;
+    gap: 64px;
+}
+
+.integration-cards {
+    display: grid;
+    gap: 18px;
+}
+
+.integration-card {
+    padding: 28px;
+
+    border: 1px solid var(--border);
+    border-radius: 20px;
+
+    background: var(--background);
+}
+
+.featured-integration {
+    border-color: rgba(35, 89, 232, 0.25);
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(35, 89, 232, 0.08),
+            rgba(109, 49, 232, 0.08)
+        );
+}
+
+.integration-label {
+    margin-bottom: 16px;
+    padding: 6px 10px;
+
+    display: inline-flex;
+
+    border-radius: 999px;
+
+    background: var(--primary-light);
+    color: var(--primary);
+
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+
+    text-transform: uppercase;
 }
 
 .steps {
@@ -390,7 +459,7 @@ h2 {
 
     border-radius: 50%;
 
-    background: var(--primary);
+    background: linear-gradient(135deg, var(--primary), var(--accent));
     color: white;
 
     font-weight: 850;
@@ -446,7 +515,8 @@ footer {
 @media (max-width: 900px) {
 
     .hero-content,
-    .contact {
+    .contact,
+    .integrations-layout {
         grid-template-columns: 1fr;
     }
 
@@ -454,12 +524,30 @@ footer {
         grid-template-columns: repeat(2, 1fr);
     }
 
+    .brand-logo {
+        width: 210px;
+        max-width: 46vw;
+    }
+
 }
 
 @media (max-width: 640px) {
 
+    .navigation {
+        min-height: 66px;
+    }
+
     nav {
         display: none;
+    }
+
+    .brand-logo {
+        width: 190px;
+        max-width: 72vw;
+    }
+
+    .hero {
+        padding: 72px 0 60px;
     }
 
     .feature-grid,
