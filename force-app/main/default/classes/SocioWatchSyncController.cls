@@ -47,35 +47,30 @@ public with sharing class SocioWatchSyncController {
             }
 
             return System.enqueueJob(
-                new SocioWatchSyncQueueable(
-                    configuration.Id
-                )
-            );
-        } catch (
-            SocioWatchAccessException |
-            SocioWatchValidationException error
-        ) {
-            AuraHandledException handledError =
-                new AuraHandledException(
-                    error.getMessage()
-                );
-
-            handledError.setMessage(
-                error.getMessage()
+                new SocioWatchSyncQueueable(configuration.Id)
             );
 
-            throw handledError;
+        } catch (SocioWatchAccessException error) {
+            throw createHandledException(error.getMessage());
+
+        } catch (SocioWatchValidationException error) {
+            throw createHandledException(error.getMessage());
+
         } catch (Exception error) {
-            AuraHandledException handledError =
-                new AuraHandledException(
-                    Label.SocioWatch_Unexpected_Error
-                );
-
-            handledError.setMessage(
+            throw createHandledException(
                 Label.SocioWatch_Unexpected_Error
             );
-
-            throw handledError;
         }
+    }
+
+    private static AuraHandledException createHandledException(
+        String message
+    ) {
+        AuraHandledException handledError =
+            new AuraHandledException(message);
+
+        handledError.setMessage(message);
+
+        return handledError;
     }
 }

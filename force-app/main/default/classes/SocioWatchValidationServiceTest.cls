@@ -4,9 +4,7 @@ private class SocioWatchValidationServiceTest {
     @IsTest
     static void normalizesCompanyName() {
         String result =
-            SocioWatchValidationService.normalizeCompanyName(
-                '  Tesla   Motors  '
-            );
+            SocioWatchValidationService.normalizeCompanyName('  Tesla   Motors  ');
 
         System.assertEquals(
             'Tesla Motors',
@@ -47,9 +45,7 @@ private class SocioWatchValidationServiceTest {
     @IsTest
     static void normalizesAlertId() {
         String result =
-            SocioWatchValidationService.normalizeAlertId(
-                '  alert_12345  '
-            );
+            SocioWatchValidationService.normalizeAlertId('  alert_12345  ');
 
         System.assertEquals(
             'alert_12345',
@@ -225,9 +221,7 @@ private class SocioWatchValidationServiceTest {
             );
 
         try {
-            SocioWatchValidationService.normalizeCompanyName(
-                invalidValue
-            );
+            SocioWatchValidationService.normalizeCompanyName(invalidValue);
 
             System.assert(
                 false,
@@ -298,28 +292,19 @@ private class SocioWatchValidationServiceTest {
     static void validatesSalesforceOrgIdentifiers() {
         System.assertEquals(
             '00D000000000001',
-            SocioWatchValidationService
-                .normalizeSalesforceOrgId(
-                    '00D000000000001'
-                )
+            SocioWatchValidationService.normalizeSalesforceOrgId('00D000000000001')
         );
 
         System.assertEquals(
             '00D000000000001AAA',
-            SocioWatchValidationService
-                .normalizeSalesforceOrgId(
-                    '00D000000000001AAA'
-                )
+            SocioWatchValidationService.normalizeSalesforceOrgId('00D000000000001AAA')
         );
     }
 
     @IsTest
     static void rejectsInvalidSalesforceOrgIdentifier() {
         try {
-            SocioWatchValidationService
-                .normalizeSalesforceOrgId(
-                    'invalid-org'
-                );
+            SocioWatchValidationService.normalizeSalesforceOrgId('invalid-org');
 
             System.assert(
                 false,
@@ -342,9 +327,7 @@ private class SocioWatchValidationServiceTest {
             );
 
         String result =
-            SocioWatchValidationService.truncateSafeError(
-                longMessage
-            );
+            SocioWatchValidationService.truncateSafeError(longMessage);
 
         System.assertEquals(
             SocioWatchConstants.MAX_SAFE_ERROR_LENGTH,
@@ -375,15 +358,9 @@ private class SocioWatchValidationServiceTest {
                 actionType ==
                 ValidationActionType.COMPANY_NAME
             ) {
-                SocioWatchValidationService
-                    .normalizeCompanyName(
-                        inputValue
-                    );
+                SocioWatchValidationService.normalizeCompanyName(inputValue);
             } else {
-                SocioWatchValidationService
-                    .normalizeAlertId(
-                        inputValue
-                    );
+                SocioWatchValidationService.normalizeAlertId(inputValue);
             }
         }
     }

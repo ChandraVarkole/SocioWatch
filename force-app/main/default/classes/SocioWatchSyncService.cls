@@ -143,8 +143,6 @@ public with sharing class SocioWatchSyncService {
             Boolean actionable =
                 getBoolean(mention, 'actionable');
 
-            // Mock data currently has no actionable property.
-            // When present, explicitly false records are skipped.
             if (
                 mention.containsKey('actionable') &&
                 actionable == false
@@ -324,7 +322,8 @@ public with sharing class SocioWatchSyncService {
             record.Status__c =
                 SocioWatchConstants.MENTION_STATUS_NEW;
 
-            record.Synced_At__c = syncedAt;
+            record.Synced_At__c =
+                syncedAt;
 
             record.Sync_Run_Id__c =
                 truncate(
@@ -350,12 +349,13 @@ public with sharing class SocioWatchSyncService {
             return 0;
         }
 
+        Schema.SObjectField externalIdField =
+            SocioWatch_Mention__c.External_Mention_Id__c;
+
         Database.UpsertResult[] results =
             Database.upsert(
                 mentions,
-                SocioWatch_Mention__c
-                    .Fields
-                    .External_Mention_Id__c,
+                externalIdField,
                 false,
                 AccessLevel.USER_MODE
             );
@@ -381,7 +381,8 @@ public with sharing class SocioWatchSyncService {
         configuration.Last_Successful_Sync__c =
             System.now();
 
-        configuration.Last_Sync_Error__c = null;
+        configuration.Last_Sync_Error__c =
+            null;
 
         Database.update(
             configuration,
@@ -393,7 +394,10 @@ public with sharing class SocioWatchSyncService {
         SocioWatch_Configuration__c configuration,
         String safeMessage
     ) {
-        if (configuration == null || configuration.Id == null) {
+        if (
+            configuration == null ||
+            configuration.Id == null
+        ) {
             return;
         }
 
@@ -418,7 +422,9 @@ public with sharing class SocioWatchSyncService {
         }
     }
 
-    private static String getSafeErrorMessage(Exception error) {
+    private static String getSafeErrorMessage(
+        Exception error
+    ) {
         if (
             error instanceof SocioWatchApiException ||
             error instanceof SocioWatchAccessException ||
@@ -462,7 +468,9 @@ public with sharing class SocioWatchSyncService {
         return String.valueOf(value).toLowerCase() == 'true';
     }
 
-    private static Datetime parseDatetime(String value) {
+    private static Datetime parseDatetime(
+        String value
+    ) {
         if (String.isBlank(value)) {
             return null;
         }
@@ -478,12 +486,15 @@ public with sharing class SocioWatchSyncService {
         }
     }
 
-    private static String normalizeSentiment(String value) {
+    private static String normalizeSentiment(
+        String value
+    ) {
         if (String.isBlank(value)) {
             return 'Unknown';
         }
 
-        String normalized = value.trim().toLowerCase();
+        String normalized =
+            value.trim().toLowerCase();
 
         if (normalized == 'positive') {
             return 'Positive';
@@ -504,12 +515,15 @@ public with sharing class SocioWatchSyncService {
         return 'Unknown';
     }
 
-    private static String normalizePriority(String value) {
+    private static String normalizePriority(
+        String value
+    ) {
         if (String.isBlank(value)) {
             return SocioWatchConstants.PRIORITY_MEDIUM;
         }
 
-        String normalized = value.trim().toLowerCase();
+        String normalized =
+            value.trim().toLowerCase();
 
         if (normalized == 'low') {
             return SocioWatchConstants.PRIORITY_LOW;
@@ -526,23 +540,30 @@ public with sharing class SocioWatchSyncService {
         return SocioWatchConstants.PRIORITY_MEDIUM;
     }
 
-    private static String normalizeActionableType(String value) {
-        Set<String> allowedValues = new Set<String>{
-            'Customer Complaint',
-            'Support Request',
-            'Churn Risk',
-            'Sales Opportunity',
-            'High Impact Mention',
-            'Safety or Legal Concern',
-            'Other'
-        };
+    private static String normalizeActionableType(
+        String value
+    ) {
+        Set<String> allowedValues =
+            new Set<String>{
+                'Customer Complaint',
+                'Support Request',
+                'Churn Risk',
+                'Sales Opportunity',
+                'High Impact Mention',
+                'Safety or Legal Concern',
+                'Other'
+            };
 
         if (String.isBlank(value)) {
             return 'Other';
         }
 
         for (String allowedValue : allowedValues) {
-            if (allowedValue.equalsIgnoreCase(value.trim())) {
+            if (
+                allowedValue.equalsIgnoreCase(
+                    value.trim()
+                )
+            ) {
                 return allowedValue;
             }
         }
@@ -562,6 +583,9 @@ public with sharing class SocioWatchSyncService {
             return value;
         }
 
-        return value.substring(0, maximumLength);
+        return value.substring(
+            0,
+            maximumLength
+        );
     }
 }

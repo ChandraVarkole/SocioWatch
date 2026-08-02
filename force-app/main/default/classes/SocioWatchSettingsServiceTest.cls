@@ -792,10 +792,7 @@ private class SocioWatchSettingsServiceTest {
     @IsTest
     static void handledExceptionUsesGenericMessageForBlankInput() {
         AuraHandledException error =
-            SocioWatchSettingsController
-                .createHandledException(
-                    null
-                );
+            SocioWatchSettingsController.createHandledException(null);
 
         System.assertEquals(
             Label.SocioWatch_Unexpected_Error,
@@ -806,8 +803,7 @@ private class SocioWatchSettingsServiceTest {
     @IsTest
     static void generatedReferenceIdIsNotBlank() {
         String referenceId =
-            SocioWatchSettingsController
-                .generateReferenceId();
+            SocioWatchSettingsController.generateReferenceId();
 
         System.assert(
             String.isNotBlank(referenceId)
@@ -921,8 +917,7 @@ private class SocioWatchSettingsServiceTest {
                 Salesforce_Org_Id__c =
                     buildUniqueOrgIdentifier(companyId),
                 Last_Sync_Status__c =
-                    SocioWatchConstants
-                        .SYNC_STATUS_NOT_STARTED
+                    SocioWatchConstants.SYNC_STATUS_NOT_STARTED
             );
 
         Database.SaveResult result =

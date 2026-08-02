@@ -7,7 +7,7 @@
     </description>
     <label>Keywords</label>
     <length>32768</length>
-    <required>true</required>
+    <required>false</required>
     <trackHistory>false</trackHistory>
     <type>LongTextArea</type>
     <visibleLines>6</visibleLines>

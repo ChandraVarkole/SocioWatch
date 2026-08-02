@@ -54,12 +54,6 @@ public class SocioWatchSettingsResponse {
         created = false;
     }
 
-    /**
-     * Converts a configuration record into an LWC-safe response.
-     *
-     * The caller must enforce sharing and field access before calling
-     * this method.
-     */
     public static SocioWatchSettingsResponse fromConfiguration(
         SocioWatch_Configuration__c configuration
     ) {
@@ -69,60 +63,35 @@ public class SocioWatchSettingsResponse {
         if (configuration == null) {
             response.syncEnabled = true;
             response.lastSyncStatus =
-                SocioWatchConstants
-                    .SYNC_STATUS_NOT_STARTED;
+                SocioWatchConstants.SYNC_STATUS_NOT_STARTED;
 
             return response;
         }
 
-        response.configurationId =
-            configuration.Id;
-
-        response.configurationNumber =
-            configuration.Name;
-
-        response.companyName =
-            configuration.Company_Name__c;
-
-        response.alertId =
-            configuration.Alert_Id__c;
-
-        response.syncEnabled =
-            configuration.Sync_Enabled__c;
-
-        response.companyId =
-            configuration.AWS_Company_Id__c;
-
-        response.tenantId =
-            configuration.Tenant_Id__c;
-
+        response.configurationId = configuration.Id;
+        response.configurationNumber = configuration.Name;
+        response.companyName = configuration.Company_Name__c;
+        response.alertId = configuration.Alert_Id__c;
+        response.syncEnabled = configuration.Sync_Enabled__c;
+        response.companyId = configuration.AWS_Company_Id__c;
+        response.tenantId = configuration.Tenant_Id__c;
         response.salesforceOrgId =
             configuration.Salesforce_Org_Id__c;
-
         response.lastSuccessfulSync =
             configuration.Last_Successful_Sync__c;
-
         response.lastSyncStatus =
             configuration.Last_Sync_Status__c;
 
-        if (
-            String.isNotBlank(
-                configuration.Keywords__c
-            )
-        ) {
+        if (String.isNotBlank(configuration.Keywords__c)) {
             response.keywords =
-                SocioWatchValidationService
-                    .parseKeywords(
-                        configuration.Keywords__c
-                    );
+                SocioWatchValidationService.parseKeywords(
+                    configuration.Keywords__c
+                );
         }
 
         return response;
     }
 
-    /**
-     * Parses and validates the response returned by AWS /v1/settings.
-     */
     public static AwsSettingsResult parseAwsResponse(
         String responseBody
     ) {
@@ -135,9 +104,7 @@ public class SocioWatchSettingsResponse {
         AwsSettingsResult result;
 
         try {
-            result = (
-                AwsSettingsResult
-            ) JSON.deserialize(
+            result = (AwsSettingsResult) JSON.deserialize(
                 responseBody,
                 AwsSettingsResult.class
             );
@@ -154,16 +121,14 @@ public class SocioWatchSettingsResponse {
         }
 
         result.companyId =
-            SocioWatchValidationService
-                .normalizeCompanyId(
-                    result.companyId
-                );
+            SocioWatchValidationService.normalizeCompanyId(
+                result.companyId
+            );
 
         result.tenantId =
-            SocioWatchValidationService
-                .normalizeTenantId(
-                    result.tenantId
-                );
+            SocioWatchValidationService.normalizeTenantId(
+                result.tenantId
+            );
 
         if (
             String.isBlank(result.companyId) ||
@@ -175,31 +140,14 @@ public class SocioWatchSettingsResponse {
         }
 
         result.message =
-            SocioWatchValidationService
-                .truncateSafeError(
-                    result.message
-                );
+            SocioWatchValidationService.truncateSafeError(
+                result.message
+            );
 
         return result;
     }
 
-    /**
-     * Internal representation of the AWS settings response.
-     *
-     * Expected AWS JSON:
-     * {
-     *   "message": "...",
-     *   "created": false,
-     *   "tenantId": "TENANT-...",
-     *   "companyId": "COMP-...",
-     *   "companyName": "...",
-     *   "externalPlatform": "salesforce",
-     *   "externalAccountId": "00D...",
-     *   "status": "Active"
-     * }
-     */
     public class AwsSettingsResult {
-
         public String message { get; set; }
         public Boolean created { get; set; }
         public String tenantId { get; set; }

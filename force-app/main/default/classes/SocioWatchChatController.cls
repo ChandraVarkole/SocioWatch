@@ -35,17 +35,17 @@ public with sharing class SocioWatchChatController {
                 );
 
             return parseAnswer(response.responseBody);
-        } catch (
-            SocioWatchAccessException |
-            SocioWatchValidationException |
-            SocioWatchApiException error
-        ) {
-            throw handledException(error.getMessage());
-        } catch (Exception error) {
-            throw handledException(
-                Label.SocioWatch_Unexpected_Error
-            );
-        }
+        } catch (SocioWatchAccessException error) {
+    throw handledException(error.getMessage());
+} catch (SocioWatchValidationException error) {
+    throw handledException(error.getMessage());
+} catch (SocioWatchApiException error) {
+    throw handledException(error.getMessage());
+} catch (Exception error) {
+    throw handledException(
+        Label.SocioWatch_Unexpected_Error
+    );
+}
     }
 
     private static SocioWatch_Configuration__c getConfiguration() {

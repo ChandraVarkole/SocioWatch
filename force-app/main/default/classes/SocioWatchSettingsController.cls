@@ -143,8 +143,7 @@ public with sharing class SocioWatchSettingsController {
     @AuraEnabled(cacheable=true)
     public static Boolean canManageSettings() {
         try {
-            return SocioWatchPermissionService
-                .canManageSettings();
+            return SocioWatchPermissionService.canManageSettings();
         } catch (Exception error) {
             String referenceId = generateReferenceId();
 

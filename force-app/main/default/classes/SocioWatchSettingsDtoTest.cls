@@ -256,10 +256,7 @@ private class SocioWatchSettingsDtoTest {
     @IsTest
     static void createsEmptyUiResponse() {
         SocioWatchSettingsResponse response =
-            SocioWatchSettingsResponse
-                .fromConfiguration(
-                    null
-                );
+            SocioWatchSettingsResponse.fromConfiguration(null);
 
         System.assertEquals(
             true,
@@ -291,15 +288,11 @@ private class SocioWatchSettingsDtoTest {
                 Salesforce_Org_Id__c =
                     '00D000000000001AAA',
                 Last_Sync_Status__c =
-                    SocioWatchConstants
-                        .SYNC_STATUS_NOT_STARTED
+                    SocioWatchConstants.SYNC_STATUS_NOT_STARTED
             );
 
         SocioWatchSettingsResponse response =
-            SocioWatchSettingsResponse
-                .fromConfiguration(
-                    configuration
-                );
+            SocioWatchSettingsResponse.fromConfiguration(configuration);
 
         System.assertEquals(
             'Tesla',
@@ -337,9 +330,7 @@ private class SocioWatchSettingsDtoTest {
         String expectedMessage
     ) {
         try {
-            SocioWatchSettingsResponse.parseAwsResponse(
-                responseBody
-            );
+            SocioWatchSettingsResponse.parseAwsResponse(responseBody);
 
             System.assert(
                 false,

@@ -66,10 +66,9 @@ public with sharing class SocioWatchSettingsService {
             request.normalizedCopy();
 
         String salesforceOrgId =
-            SocioWatchValidationService
-                .normalizeSalesforceOrgId(
-                    UserInfo.getOrganizationId()
-                );
+            SocioWatchValidationService.normalizeSalesforceOrgId(
+                UserInfo.getOrganizationId()
+            );
 
         Id existingConfigurationId =
             findSingletonConfigurationId();
@@ -316,28 +315,25 @@ public with sharing class SocioWatchSettingsService {
             'SocioWatch settings could not be saved.';
 
         if (errors != null && !errors.isEmpty()) {
-            StatusCode statusCode =
+            StatusCode dmlStatusCode =
                 errors[0].getStatusCode();
 
             if (
-                statusCode ==
+                dmlStatusCode ==
                     StatusCode.INSUFFICIENT_ACCESS_ON_CROSS_REFERENCE_ENTITY ||
-                statusCode ==
+                dmlStatusCode ==
                     StatusCode.INSUFFICIENT_ACCESS_OR_READONLY
             ) {
                 safeMessage =
-                    'You do not have permission to save ' +
-                    'SocioWatch settings.';
+                    'You do not have permission to save SocioWatch settings.';
             } else if (
-                statusCode ==
-                    StatusCode.DUPLICATE_VALUE ||
-                statusCode ==
-                    StatusCode.DUPLICATES_DETECTED
+                dmlStatusCode == StatusCode.DUPLICATE_VALUE ||
+                dmlStatusCode == StatusCode.DUPLICATES_DETECTED
             ) {
                 safeMessage =
                     'A SocioWatch configuration already exists.';
             } else if (
-                statusCode ==
+                dmlStatusCode ==
                     StatusCode.FIELD_CUSTOM_VALIDATION_EXCEPTION
             ) {
                 safeMessage =

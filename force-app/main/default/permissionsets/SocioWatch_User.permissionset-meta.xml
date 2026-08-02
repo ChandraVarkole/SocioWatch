@@ -7,12 +7,21 @@
     <hasActivationRequired>false</hasActivationRequired>
     <label>SocioWatch User</label>
 
+    <applicationVisibilities>
+        <application>SocioWatch</application>
+        <visible>true</visible>
+    </applicationVisibilities>
+
+    <classAccesses>
+        <apexClass>SocioWatchChatController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+
     <customPermissions>
         <enabled>true</enabled>
         <name>SocioWatch_Use_Chat</name>
     </customPermissions>
 
-    <!-- Configuration is read-only for standard users -->
     <objectPermissions>
         <allowCreate>false</allowCreate>
         <allowDelete>false</allowDelete>
@@ -24,7 +33,6 @@
         <viewAllRecords>false</viewAllRecords>
     </objectPermissions>
 
-    <!-- Users can review and update actionable mention records -->
     <objectPermissions>
         <allowCreate>false</allowCreate>
         <allowDelete>false</allowDelete>
@@ -36,20 +44,10 @@
         <viewAllRecords>false</viewAllRecords>
     </objectPermissions>
 
-    <!-- Read-only configuration fields -->
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>SocioWatch_Configuration__c.Alert_Id__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
+    <!-- Non-required Configuration fields -->
     <fieldPermissions>
         <editable>false</editable>
         <field>SocioWatch_Configuration__c.AWS_Company_Id__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>SocioWatch_Configuration__c.Company_Name__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -73,7 +71,7 @@
         <readable>true</readable>
     </fieldPermissions>
 
-    <!-- Read-only imported mention data -->
+    <!-- Read-only imported Mention fields -->
     <fieldPermissions>
         <editable>false</editable>
         <field>SocioWatch_Mention__c.Action_Reason__c</field>
@@ -96,22 +94,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>SocioWatch_Mention__c.Configuration__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>SocioWatch_Mention__c.External_Mention_Id__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>SocioWatch_Mention__c.Language__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>SocioWatch_Mention__c.Mention_Date__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -141,11 +124,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>SocioWatch_Mention__c.Synced_At__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>SocioWatch_Mention__c.Sync_Run_Id__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -155,7 +133,7 @@
         <readable>true</readable>
     </fieldPermissions>
 
-    <!-- User-managed follow-up fields -->
+    <!-- User-managed workflow fields -->
     <fieldPermissions>
         <editable>true</editable>
         <field>SocioWatch_Mention__c.Assigned_To__c</field>
@@ -177,15 +155,23 @@
         <readable>true</readable>
     </fieldPermissions>
 
-    <classAccesses>
-        <apexClass>SocioWatchChatController</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
+    <tabSettings>
+        <tab>SocioWatch_Mention__c</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
 
+    <tabSettings>
+        <tab>SocioWatch_Chat</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+
+    <tabSettings>
+        <tab>SocioWatch_Settings</tab>
+        <visibility>None</visibility>
+    </tabSettings>
 
     <tabSettings>
         <tab>SocioWatch_Configuration__c</tab>
         <visibility>None</visibility>
     </tabSettings>
-
 </PermissionSet>

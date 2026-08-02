@@ -13,7 +13,7 @@
     <enableReports>true</enableReports>
     <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>
-    <enableStreamingApi>false</enableStreamingApi>
+    <enableStreamingApi>true</enableStreamingApi>
     <externalSharingModel>Private</externalSharingModel>
     <label>SocioWatch Mention</label>
     <nameField>
