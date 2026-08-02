@@ -4,13 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>SocioWatch | Mentions Converted into Intelligence</title>
+    <title>SocioWatch | Mentions Converted to Intelligence</title>
 
     <meta
         name="description"
-        content="SocioWatch helps businesses monitor online mentions, identify actionable customer feedback, and understand brand sentiment."
+        content="SocioWatch securely converts online mentions, reviews, and customer conversations into actionable intelligence for Salesforce and other business applications."
     >
 
+    <meta property="og:title" content="SocioWatch | Mentions Converted to Intelligence">
+    <meta
+        property="og:description"
+        content="Secure social and reputation intelligence for Salesforce and any application that integrates with SocioWatch."
+    >
+    <meta property="og:image" content="sociowatch-logo.webp">
+    <meta property="og:type" content="website">
+
+    <link rel="icon" href="sociowatch-logo.webp">
     <link rel="stylesheet" href="styles.css">
 </head>
 
@@ -19,13 +28,17 @@
 <header class="header">
     <div class="container navigation">
 
-        <div class="brand">
-            <div class="logo">S</div>
-            <span>SocioWatch</span>
-        </div>
+        <a class="brand" href="#top" aria-label="SocioWatch home">
+            <img
+                class="brand-logo"
+                src="sociowatch-logo.webp"
+                alt="SocioWatch"
+            >
+        </a>
 
-        <nav>
+        <nav aria-label="Main navigation">
             <a href="#features">Features</a>
+            <a href="#integrations">Integrations</a>
             <a href="#how-it-works">How It Works</a>
             <a href="#contact">Contact</a>
         </nav>
@@ -33,7 +46,7 @@
     </div>
 </header>
 
-<main>
+<main id="top">
 
     <section class="hero">
 
@@ -42,17 +55,23 @@
             <div class="hero-text">
 
                 <p class="eyebrow">
-                    AI-Powered Social Listening
+                    Secure Social & Reputation Intelligence
                 </p>
 
                 <h1>
-                    Mentions Converted into Intelligence.
+                    Mentions Converted to Intelligence.
                 </h1>
 
                 <p class="description">
-                    SocioWatch helps businesses monitor online mentions,
-                    identify actionable customer feedback, and understand
-                    what customers are saying about their brand.
+                    SocioWatch securely collects and analyzes online mentions,
+                    reviews, customer feedback, and brand conversations so
+                    businesses can identify what needs attention and act faster.
+                </p>
+
+                <p class="description description-secondary">
+                    Install and configure SocioWatch directly in Salesforce,
+                    or securely connect it to any business application through
+                    integration-ready APIs.
                 </p>
 
                 <div class="hero-buttons">
@@ -60,8 +79,8 @@
                         Request Early Access
                     </a>
 
-                    <a class="button secondary" href="#how-it-works">
-                        See How It Works
+                    <a class="button secondary" href="#integrations">
+                        Explore Integrations
                     </a>
                 </div>
 
@@ -132,7 +151,7 @@
             <p class="eyebrow">Core Capabilities</p>
 
             <h2>
-                Simple monitoring. Useful intelligence.
+                Monitor conversations. Understand sentiment. Take action.
             </h2>
 
             <div class="feature-grid">
@@ -141,17 +160,17 @@
                     <span class="feature-number">01</span>
                     <h3>Monitor Mentions</h3>
                     <p>
-                        Bring online brand mentions, reviews, and discussions
-                        into one central platform.
+                        Bring brand mentions, reviews, comments, and customer
+                        conversations into one secure intelligence platform.
                     </p>
                 </article>
 
                 <article>
                     <span class="feature-number">02</span>
-                    <h3>Identify Actionable Feedback</h3>
+                    <h3>Prioritize Feedback</h3>
                     <p>
-                        Surface complaints, support requests, risks, and
-                        opportunities that require follow-up.
+                        Surface complaints, support requests, reputation risks,
+                        praise, and business opportunities that need follow-up.
                     </p>
                 </article>
 
@@ -159,17 +178,18 @@
                     <span class="feature-number">03</span>
                     <h3>Ask AI Questions</h3>
                     <p>
-                        Understand sentiment, recurring concerns, trends,
-                        and top customer feedback through chat.
+                        Explore sentiment, recurring concerns, trends, and
+                        historical customer feedback through a conversational
+                        experience.
                     </p>
                 </article>
 
                 <article>
                     <span class="feature-number">04</span>
-                    <h3>Connect to Salesforce</h3>
+                    <h3>Connect Your Applications</h3>
                     <p>
-                        Send important mentions into Salesforce while keeping
-                        full historical intelligence in the cloud.
+                        Securely deliver SocioWatch intelligence to Salesforce
+                        or other applications through integration-ready APIs.
                     </p>
                 </article>
 
@@ -179,14 +199,62 @@
 
     </section>
 
-    <section id="how-it-works" class="section alternate">
+    <section id="integrations" class="section alternate">
+
+        <div class="container integrations-layout">
+
+            <div>
+                <p class="eyebrow">Built for Integration</p>
+
+                <h2>
+                    Ready for Salesforce. Available to any connected application.
+                </h2>
+
+                <p class="section-description">
+                    SocioWatch is not limited to a single platform. Its secure
+                    integration layer allows approved applications to access
+                    company-specific mentions, insights, and analytics without
+                    exposing another customer's data.
+                </p>
+            </div>
+
+            <div class="integration-cards">
+
+                <article class="integration-card featured-integration">
+                    <span class="integration-label">Salesforce</span>
+                    <h3>Installation-ready and configurable</h3>
+                    <p>
+                        SocioWatch is designed for easy installation and
+                        configuration in Salesforce, with a native experience
+                        for settings, actionable mentions, and AI-powered
+                        intelligence.
+                    </p>
+                </article>
+
+                <article class="integration-card">
+                    <span class="integration-label">Secure APIs</span>
+                    <h3>Connect other business applications</h3>
+                    <p>
+                        Approved applications can securely integrate with
+                        SocioWatch to retrieve relevant intelligence for the
+                        correct company and use case.
+                    </p>
+                </article>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <section id="how-it-works" class="section">
 
         <div class="container">
 
             <p class="eyebrow">How It Works</p>
 
             <h2>
-                From online conversation to customer action.
+                From online conversation to business action.
             </h2>
 
             <div class="steps">
@@ -195,8 +263,8 @@
                     <span>1</span>
                     <h3>Configure</h3>
                     <p>
-                        Add the company, brand names, and keywords that should
-                        be monitored.
+                        Add the company, brand names, alert settings, and
+                        keywords that should be monitored.
                     </p>
                 </article>
 
@@ -204,17 +272,18 @@
                     <span>2</span>
                     <h3>Monitor</h3>
                     <p>
-                        SocioWatch regularly retrieves and organizes new
-                        online mentions.
+                        SocioWatch securely retrieves, organizes, and analyzes
+                        relevant online mentions.
                     </p>
                 </article>
 
                 <article>
                     <span>3</span>
-                    <h3>Act</h3>
+                    <h3>Connect and Act</h3>
                     <p>
-                        Send actionable mentions into Salesforce and use AI
-                        to understand the bigger picture.
+                        Deliver actionable intelligence to Salesforce or
+                        another approved application and use AI to understand
+                        the bigger picture.
                     </p>
                 </article>
 
@@ -224,7 +293,7 @@
 
     </section>
 
-    <section id="contact" class="section">
+    <section id="contact" class="section alternate">
 
         <div class="container contact">
 
@@ -234,8 +303,9 @@
                 <h2>Interested in SocioWatch?</h2>
 
                 <p>
-                    SocioWatch is currently being developed as an AI-powered
-                    social listening and reputation intelligence platform.
+                    SocioWatch is currently being developed as a secure,
+                    AI-powered social listening and reputation intelligence
+                    platform for Salesforce and other connected applications.
                 </p>
             </div>
 
@@ -244,7 +314,7 @@
                 <h3>Request Early Access</h3>
 
                 <p>
-                    Contact:
+                    Contact the SocioWatch team:
                 </p>
 
                 <a href="mailto:hello@getsociowatch.com">
@@ -252,8 +322,8 @@
                 </a>
 
                 <p class="small-text">
-                    This address can forward to your personal email through
-                    Porkbun.
+                    Early access is intended for businesses interested in
+                    Salesforce installation or secure API integration.
                 </p>
 
             </div>
