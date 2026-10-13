@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Other_Source_Mentions</fullName>
+    <columns>NAME</columns>
+    <columns>Author_Name__c</columns>
+    <columns>Title__c</columns>
+    <columns>Source__c</columns>
+    <columns>Source_URL__c</columns>
+    <columns>Sentiment__c</columns>
+    <columns>Priority__c</columns>
+    <columns>Status__c</columns>
+    <columns>Mention_Date__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Source__c</field>
+        <operation>notEqual</operation>
+        <value>X,YouTube,News,Forum,Review,Google Reviews</value>
+    </filters>
+    <filters>
+        <field>Is_Relevant__c</field>
+        <operation>equals</operation>
+        <value>1</value>
+    </filters>
+    <label>Other Source Mentions</label>
+</ListView>

@@ -1,0 +1,27 @@
+engines:
+  eslint:
+    eslint_config_file: "eslint.config.js"
+
+suppressions:
+  "force-app/main/default/objects/SocioWatch_Configuration__c/fields/Keywords__c.field-meta.xml":
+    - rule_selector: "pmd:ProtectSensitiveData"
+      max_suppressed_violations: 1
+      reason: >-
+        False positive. This long-text field contains customer-selected public
+        brand monitoring terms; it does not contain credentials, API keys,
+        tokens, passwords, or other authentication material.
+
+  "force-app/main/default/objects/SocioWatch_Mention__c/fields/Assigned_To__c.field-meta.xml":
+    - rule_selector: "pmd:ProtectSensitiveData"
+      max_suppressed_violations: 1
+      reason: >-
+        False positive. This is a standard Salesforce lookup to the User who
+        owns follow-up work; it does not store authentication material.
+
+  "force-app/main/default/objects/SocioWatch_Mention__c/fields/Author_Name__c.field-meta.xml":
+    - rule_selector: "pmd:ProtectSensitiveData"
+      max_suppressed_violations: 1
+      reason: >-
+        False positive. This field stores the public display name or username
+        supplied by a mention source; it does not store authentication
+        material.

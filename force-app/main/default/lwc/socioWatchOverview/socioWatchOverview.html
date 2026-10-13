@@ -1,0 +1,371 @@
+<template>
+  <main class="overview-page">
+    <header class="overview-hero">
+      <div class="brand-lockup">
+        <div>
+          <img
+            class="overview-logo"
+            src={logoUrl}
+            alt="SocioWatch — Mentions Converted to Intelligence"
+          />
+          <h1 class="assistive-heading">SocioWatch</h1>
+          <p class="hero-copy">
+            See what people are saying, spot risk early, and focus your team.
+          </p>
+        </div>
+      </div>
+
+      <div class="hero-actions">
+        <lightning-combobox
+          name="period"
+          variant="label-hidden"
+          label="Reporting period"
+          value={selectedPeriod}
+          options={periodOptions}
+          onchange={handlePeriodChange}
+        ></lightning-combobox>
+
+        <lightning-button-icon
+          icon-name="utility:refresh"
+          alternative-text="Refresh overview"
+          title="Refresh overview"
+          disabled={isRefreshing}
+          onclick={handleRefresh}
+        ></lightning-button-icon>
+
+        <lightning-button
+          variant="brand"
+          label="View all mentions"
+          icon-name="utility:forward"
+          icon-position="right"
+          onclick={openAllMentions}
+        ></lightning-button>
+      </div>
+    </header>
+
+    <template if:true={isLoading}>
+      <div class="loading-state">
+        <lightning-spinner
+          alternative-text="Loading SocioWatch overview"
+          size="medium"
+        ></lightning-spinner>
+      </div>
+    </template>
+
+    <template if:true={errorMessage}>
+      <section class="error-state" role="alert">
+        <lightning-icon
+          icon-name="utility:error"
+          size="small"
+          alternative-text="Error"
+        ></lightning-icon>
+        <div>
+          <h2>We couldn’t load the overview</h2>
+          <p>{errorMessage}</p>
+        </div>
+      </section>
+    </template>
+
+    <template if:true={dashboard}>
+      <template if:true={showTrialBanner}>
+        <section class="trial-banner" aria-label="Free trial information">
+          <p class="trial-label">Free Trial</p>
+          <p class="trial-message">
+            <template if:true={trialIsActive}>
+              <strong>{trialDaysRemaining} {trialDayLabel} remaining.</strong>
+            </template>
+            <template if:false={trialIsActive}>
+              <strong>Trial ended.</strong>
+            </template>
+            &nbsp;To continue using SocioWatch afterward, reach out to&nbsp;
+            <a href="mailto:contact@getsociowatch.com"
+              >contact@getsociowatch.com</a
+            >. Your access will not renew automatically.
+          </p>
+        </section>
+      </template>
+
+      <section class="kpi-grid" aria-label="Key performance indicators">
+        <article class="kpi-card kpi-volume">
+          <div class="kpi-icon">
+            <lightning-icon
+              icon-name="utility:chart"
+              size="small"
+              alternative-text=""
+            ></lightning-icon>
+          </div>
+          <div>
+            <p class="kpi-label">Total mentions</p>
+            <p class="kpi-value">
+              <lightning-formatted-number
+                value={totalMentions}
+              ></lightning-formatted-number>
+            </p>
+            <p class="kpi-note">Conversation volume</p>
+          </div>
+        </article>
+
+        <article class="kpi-card kpi-new">
+          <div class="kpi-icon">
+            <lightning-icon
+              icon-name="utility:new"
+              size="small"
+              alternative-text=""
+            ></lightning-icon>
+          </div>
+          <div>
+            <p class="kpi-label">New</p>
+            <p class="kpi-value">
+              <lightning-formatted-number
+                value={newMentions}
+              ></lightning-formatted-number>
+            </p>
+            <p class="kpi-note">Waiting for review</p>
+          </div>
+        </article>
+
+        <article class="kpi-card kpi-attention">
+          <div class="kpi-icon">
+            <lightning-icon
+              icon-name="utility:warning"
+              size="small"
+              alternative-text=""
+            ></lightning-icon>
+          </div>
+          <div>
+            <p class="kpi-label">Needs attention</p>
+            <p class="kpi-value">
+              <lightning-formatted-number
+                value={attentionMentions}
+              ></lightning-formatted-number>
+            </p>
+            <p class="kpi-note">High or critical priority</p>
+          </div>
+        </article>
+
+        <article class="kpi-card kpi-negative">
+          <div class="kpi-icon">
+            <lightning-icon
+              icon-name="utility:sentiment_negative"
+              size="small"
+              alternative-text=""
+            ></lightning-icon>
+          </div>
+          <div>
+            <p class="kpi-label">Negative</p>
+            <p class="kpi-value">
+              <lightning-formatted-number
+                value={negativeMentions}
+              ></lightning-formatted-number>
+            </p>
+            <p class="kpi-note">Reputation watch</p>
+          </div>
+        </article>
+      </section>
+
+      <section class="insight-grid">
+        <article class="panel source-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="panel-kicker">CHANNEL MIX</p>
+              <h2>Where conversations happen</h2>
+            </div>
+            <span class="panel-caption">Share of mentions</span>
+          </div>
+
+          <template if:true={hasMentions}>
+            <div class="source-list">
+              <template for:each={sources} for:item="source">
+                <div class="source-row" key={source.label}>
+                  <span class={source.badgeClass}> {source.symbol} </span>
+                  <span class="source-name">{source.label}</span>
+                  <div class="bar-track" aria-hidden="true">
+                    <span class="bar-fill" style={source.barStyle}></span>
+                  </div>
+                  <span class="source-count">
+                    <lightning-formatted-number
+                      value={source.count}
+                    ></lightning-formatted-number>
+                  </span>
+                  <span class="source-percent"> {source.percentage}% </span>
+                </div>
+              </template>
+            </div>
+          </template>
+
+          <template if:false={hasMentions}>
+            <p class="empty-inline">No mentions in this period.</p>
+          </template>
+        </article>
+
+        <article class="panel sentiment-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="panel-kicker">AUDIENCE MOOD</p>
+              <h2>Sentiment</h2>
+            </div>
+          </div>
+
+          <div class="sentiment-content">
+            <div
+              class="sentiment-ring"
+              style={sentimentRingStyle}
+              aria-label="Sentiment distribution"
+            >
+              <div class="ring-center">
+                <strong>{totalMentions}</strong>
+                <span>mentions</span>
+              </div>
+            </div>
+
+            <div class="sentiment-legend">
+              <template for:each={sentiments} for:item="sentiment">
+                <div class="legend-row" key={sentiment.label}>
+                  <span class="legend-dot" style={sentiment.dotStyle}></span>
+                  <span>{sentiment.label}</span>
+                  <strong>{sentiment.percentage}%</strong>
+                </div>
+              </template>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="panel trend-panel">
+        <div class="panel-heading">
+          <div>
+            <p class="panel-kicker">MOMENTUM</p>
+            <h2>Daily conversation volume</h2>
+          </div>
+          <span class="panel-caption">Latest 14 days</span>
+        </div>
+
+        <div class="trend-chart" aria-label="Mention volume over 14 days">
+          <template for:each={dailyTrend} for:item="day">
+            <div class="trend-column" key={day.day} title={day.count}>
+              <span class="trend-value">{day.count}</span>
+              <div class="trend-bar-wrap">
+                <span class="trend-bar" style={day.barStyle}></span>
+              </div>
+              <template if:true={day.showLabel}>
+                <span class="trend-label">{day.dayLabel}</span>
+              </template>
+            </div>
+          </template>
+        </div>
+      </section>
+
+      <section class="feed-section">
+        <div class="feed-heading">
+          <div>
+            <p class="panel-kicker">LIVE FEED</p>
+            <h2>Latest mentions</h2>
+            <p>Open a record to assign, prioritize, or update its status.</p>
+          </div>
+          <lightning-button
+            variant="base"
+            label="See every mention"
+            icon-name="utility:forward"
+            icon-position="right"
+            onclick={openAllMentions}
+          ></lightning-button>
+        </div>
+
+        <template if:true={hasMentions}>
+          <div class="mention-grid">
+            <template for:each={recentMentions} for:item="mention">
+              <article class="mention-card" key={mention.id}>
+                <div class="mention-topline">
+                  <span class={mention.badgeClass}> {mention.symbol} </span>
+                  <div class="mention-meta">
+                    <span>{mention.source}</span>
+                    <span aria-hidden="true">•</span>
+                    <lightning-formatted-date-time
+                      value={mention.mentionDate}
+                      month="short"
+                      day="numeric"
+                      hour="2-digit"
+                      minute="2-digit"
+                    ></lightning-formatted-date-time>
+                  </div>
+                  <span class={mention.priorityClass}>
+                    {mention.priority}
+                  </span>
+                </div>
+
+                <button
+                  class="mention-title"
+                  data-id={mention.id}
+                  onclick={openMention}
+                >
+                  {mention.displayTitle}
+                </button>
+
+                <template if:true={mention.hasExcerpt}>
+                  <p class="mention-excerpt">{mention.excerpt}</p>
+                </template>
+
+                <div class="mention-footer">
+                  <div class="mention-tags">
+                    <span class={mention.sentimentClass}>
+                      {mention.sentiment}
+                    </span>
+                    <span class="tag status-tag"> {mention.status} </span>
+                  </div>
+
+                  <div class="mention-actions">
+                    <lightning-button
+                      variant="base"
+                      label="Not relevant"
+                      data-id={mention.id}
+                      disabled={isFeedbackUpdating}
+                      onclick={markMentionNotRelevant}
+                    ></lightning-button>
+
+                    <template if:true={mention.hasSourceUrl}>
+                      <a
+                        href={mention.sourceUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Open source
+                        <lightning-icon
+                          icon-name="utility:new_window"
+                          size="xx-small"
+                          alternative-text="Opens in a new window"
+                        ></lightning-icon>
+                      </a>
+                    </template>
+                  </div>
+                </div>
+              </article>
+            </template>
+          </div>
+        </template>
+
+        <template if:false={hasMentions}>
+          <div class="empty-state">
+            <lightning-icon
+              icon-name="utility:inbox"
+              size="medium"
+              alternative-text=""
+            ></lightning-icon>
+            <h3>No mentions for this period</h3>
+            <p>Choose a wider date range to see earlier conversations.</p>
+          </div>
+        </template>
+      </section>
+
+      <footer class="updated-at">
+        Last refreshed
+        <lightning-formatted-date-time
+          value={dashboard.generatedAt}
+          month="short"
+          day="numeric"
+          hour="2-digit"
+          minute="2-digit"
+        ></lightning-formatted-date-time>
+      </footer>
+    </template>
+  </main>
+</template>
