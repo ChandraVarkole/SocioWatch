@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Google_Reviews_Enabled__c</fullName>
+    <defaultValue>true</defaultValue>
+    <description
+  >Indicates whether SocioWatch collects Google Reviews for the configured business location.</description>
+    <label>Include Google Reviews</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

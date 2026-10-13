@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
     <description>
         Administrative access for configuring SocioWatch, synchronizing data,
@@ -27,6 +27,16 @@
         <enabled>true</enabled>
     </classAccesses>
 
+    <classAccesses>
+        <apexClass>SocioWatchDashboardController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+
+    <classAccesses>
+        <apexClass>SocioWatchMentionFeedbackController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+
     <customPermissions>
         <enabled>true</enabled>
         <name>SocioWatch_Manage_Settings</name>
@@ -41,6 +51,12 @@
         <enabled>true</enabled>
         <name>SocioWatch_Use_Chat</name>
     </customPermissions>
+
+    <externalCredentialPrincipalAccesses>
+        <enabled>true</enabled>
+        <externalCredentialPrincipal
+    >SocioWatch_API_Authentication-SocioWatchToken</externalCredentialPrincipal>
+    </externalCredentialPrincipalAccesses>
 
     <objectPermissions>
         <allowCreate>true</allowCreate>
@@ -67,12 +83,32 @@
     <!-- Non-required Configuration fields -->
     <fieldPermissions>
         <editable>true</editable>
+        <field>SocioWatch_Configuration__c.Auto_Link_Mentions__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>SocioWatch_Configuration__c.Author_Match_Object__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>SocioWatch_Configuration__c.Author_Match_Field__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>SocioWatch_Configuration__c.AWS_Company_Id__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
         <field>SocioWatch_Configuration__c.Keywords__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>SocioWatch_Configuration__c.LLM_Mention_Keyword__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -106,7 +142,73 @@
         <readable>true</readable>
     </fieldPermissions>
 
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>SocioWatch_Configuration__c.Website__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>SocioWatch_Configuration__c.Company_City__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>SocioWatch_Configuration__c.Company_State_Province__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>SocioWatch_Configuration__c.Company_Country__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>SocioWatch_Configuration__c.Google_Reviews_Enabled__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>SocioWatch_Configuration__c.Full_License__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+
     <!-- Non-required Mention fields -->
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>SocioWatch_Mention__c.Author_Match_Status__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>SocioWatch_Mention__c.Linked_Account__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>SocioWatch_Mention__c.Linked_Record_Id__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>SocioWatch_Mention__c.Linked_Record_Name__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>SocioWatch_Mention__c.Linked_Object_API_Name__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>SocioWatch_Mention__c.Linked_Record__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>SocioWatch_Mention__c.Is_Relevant__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
         <field>SocioWatch_Mention__c.Action_Reason__c</field>
@@ -190,6 +292,11 @@
 
     <tabSettings>
         <tab>SocioWatch_Mention__c</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+
+    <tabSettings>
+        <tab>SocioWatch_Overview</tab>
         <visibility>Visible</visibility>
     </tabSettings>
 

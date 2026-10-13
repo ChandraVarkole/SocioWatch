@@ -1,59 +1,155 @@
 <template>
-    <lightning-card
-        title={labels.title}
-        icon-name="standard:bot"
-    >
-        <div class="chat-container">
-            <div
-                class="messages"
-                role="log"
-                aria-live="polite"
-            >
-                <template if:false={hasMessages}>
-                    <p class="empty-message">
-                        Ask SocioWatch about customer sentiment,
-                        concerns, trends, or actionable feedback.
-                    </p>
-                </template>
-
-                <template for:each={messages} for:item="message">
-                    <div
-                        key={message.id}
-                        class={message.cssClass}
-                    >
-                        <strong>{message.sender}</strong>
-                        <p>{message.text}</p>
-                    </div>
-                </template>
-            </div>
-
-            <lightning-textarea
-                label="Question"
-                value={question}
-                placeholder={labels.placeholder}
-                maxlength="2000"
-                disabled={isLoading}
-                onchange={handleQuestionChange}
-            >
-            </lightning-textarea>
-
-            <div class="actions">
-                <lightning-button
-                    variant="brand"
-                    label="Ask SocioWatch"
-                    disabled={isAskDisabled}
-                    onclick={handleAsk}
-                >
-                </lightning-button>
-            </div>
-
-            <template if:true={isLoading}>
-                <lightning-spinner
-                    alternative-text="SocioWatch is preparing an answer"
-                    size="small"
-                >
-                </lightning-spinner>
-            </template>
+  <main class="chat-page">
+    <section class="chat-shell" aria-label="SocioWatch intelligence chat">
+      <header class="chat-header">
+        <div class="brand-area">
+          <img
+            src={logoUrl}
+            alt="SocioWatch — Mentions Converted to Intelligence"
+          />
+          <div class="header-copy">
+            <p>INTELLIGENCE ASSISTANT</p>
+            <h1>{labels.title}</h1>
+          </div>
         </div>
-    </lightning-card>
+
+        <div class="header-actions">
+          <span class="live-status">
+            <span></span>
+            Ready
+          </span>
+          <lightning-button
+            variant="neutral"
+            label="New conversation"
+            icon-name="utility:new"
+            disabled={isNewConversationDisabled}
+            onclick={handleNewConversation}
+          ></lightning-button>
+        </div>
+      </header>
+
+      <div class="conversation">
+        <div class="messages" role="log" aria-live="polite">
+          <template if:false={hasMessages}>
+            <div class="welcome-state">
+              <span class="assistant-orb">
+                <lightning-icon
+                  icon-name="utility:einstein"
+                  size="medium"
+                  alternative-text=""
+                ></lightning-icon>
+              </span>
+              <p class="welcome-kicker">YOUR MENTION DATA, EXPLAINED</p>
+              <h2>What would you like to know?</h2>
+              <p class="welcome-copy">
+                Ask about sentiment, emerging concerns, priorities, or the
+                conversations that need a response.
+              </p>
+
+              <div class="suggestion-grid" aria-label="Suggested questions">
+                <button
+                  data-question="What mentions need our attention today?"
+                  onclick={handleSuggestion}
+                >
+                  <lightning-icon
+                    icon-name="utility:warning"
+                    size="x-small"
+                    alternative-text=""
+                  ></lightning-icon>
+                  <span>What needs attention today?</span>
+                </button>
+                <button
+                  data-question="Summarize the negative mentions and key concerns."
+                  onclick={handleSuggestion}
+                >
+                  <lightning-icon
+                    icon-name="utility:sentiment_negative"
+                    size="x-small"
+                    alternative-text=""
+                  ></lightning-icon>
+                  <span>Summarize negative mentions</span>
+                </button>
+                <button
+                  data-question="Which sources are driving the most conversation?"
+                  onclick={handleSuggestion}
+                >
+                  <lightning-icon
+                    icon-name="utility:chart"
+                    size="x-small"
+                    alternative-text=""
+                  ></lightning-icon>
+                  <span>Compare conversation sources</span>
+                </button>
+                <button
+                  data-question="Which mentions should our team respond to first?"
+                  onclick={handleSuggestion}
+                >
+                  <lightning-icon
+                    icon-name="utility:priority"
+                    size="x-small"
+                    alternative-text=""
+                  ></lightning-icon>
+                  <span>Recommend next actions</span>
+                </button>
+              </div>
+            </div>
+          </template>
+
+          <template for:each={messages} for:item="message">
+            <article key={message.id} class={message.cssClass}>
+              <span class={message.avatarClass}>{message.avatar}</span>
+              <div class="bubble">
+                <div class="message-heading">
+                  <strong>{message.sender}</strong>
+                  <span>{message.timeLabel}</span>
+                </div>
+                <p>{message.text}</p>
+              </div>
+            </article>
+          </template>
+
+          <template if:true={isLoading}>
+            <article class="message assistant-message typing-message">
+              <span class="message-avatar assistant-avatar">SW</span>
+              <div class="bubble">
+                <strong>SocioWatch</strong>
+                <div
+                  class="typing-dots"
+                  aria-label="SocioWatch is preparing an answer"
+                >
+                  <span></span><span></span><span></span>
+                </div>
+              </div>
+            </article>
+          </template>
+        </div>
+
+        <div class="composer">
+          <lightning-textarea
+            class="question-input"
+            label="Ask SocioWatch"
+            variant="label-hidden"
+            value={question}
+            placeholder={labels.placeholder}
+            maxlength="2000"
+            disabled={isLoading}
+            onchange={handleQuestionChange}
+            onkeydown={handleComposerKeyDown}
+          ></lightning-textarea>
+
+          <div class="composer-footer">
+            <span>Press Ctrl/⌘ + Enter to send</span>
+            <lightning-button
+              variant="brand"
+              label="Ask SocioWatch"
+              icon-name="utility:send"
+              icon-position="right"
+              disabled={isAskDisabled}
+              onclick={handleAsk}
+            ></lightning-button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
 </template>

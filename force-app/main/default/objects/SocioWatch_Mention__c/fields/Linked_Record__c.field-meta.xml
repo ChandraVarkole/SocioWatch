@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Linked_Record__c</fullName>
+    <description
+  >Clickable link to the Salesforce record matched to the mention Author Name.</description>
+    <formula
+  >IF(ISBLANK(Linked_Record_Id__c), &quot;&quot;, HYPERLINK(&quot;/&quot; &amp; Linked_Record_Id__c, Linked_Record_Name__c, &quot;_self&quot;))</formula>
+    <formulaTreatBlanksAs>BlankAsBlank</formulaTreatBlanksAs>
+    <label>Linked Record</label>
+    <required>false</required>
+    <type>Text</type>
+</CustomField>

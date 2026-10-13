@@ -1,7 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
     <brand>
         <headerColor>#6557E8</headerColor>
+        <logo>SocioWatchAppLogo</logo>
+        <logoVersion>1</logoVersion>
         <shouldOverrideOrgTheme>true</shouldOverrideOrgTheme>
     </brand>
 
@@ -20,7 +22,7 @@
     <label>SocioWatch</label>
     <navType>Standard</navType>
 
-    <tabs>standard-home</tabs>
+    <tabs>SocioWatch_Overview</tabs>
     <tabs>SocioWatch_Mention__c</tabs>
     <tabs>SocioWatch_Chat</tabs>
     <tabs>SocioWatch_Settings</tabs>

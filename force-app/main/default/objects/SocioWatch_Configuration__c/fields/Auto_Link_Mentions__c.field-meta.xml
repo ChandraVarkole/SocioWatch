@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Auto_Link_Mentions__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description
+  >Links newly created mentions when the author name exactly matches the configured Salesforce field.</description>
+    <label>Automatically Link Mentions</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

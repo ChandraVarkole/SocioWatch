@@ -1,165 +1,500 @@
 <template>
-    <lightning-card
-        title={labels.settingsTitle}
-        icon-name="standard:settings"
-    >
-        <template if:true={isLoading}>
+  <main class="settings-page">
+    <template if:true={isSaving}>
+      <section
+        class="save-progress-overlay"
+        role="status"
+        aria-live="assertive"
+        aria-busy="true"
+      >
+        <div class="save-progress-card">
+          <div class="save-progress-spinner">
             <lightning-spinner
-                alternative-text="Loading SocioWatch settings"
-                size="medium"
-            >
-            </lightning-spinner>
-        </template>
-
-        <div class="slds-p-horizontal_medium slds-p-bottom_medium">
-            <template if:false={hasAccess}>
-                <div
-                    class="slds-notify slds-notify_alert
-                        slds-alert_error"
-                    role="alert"
-                >
-                    <span class="slds-assistive-text">
-                        Error
-                    </span>
-
-                    <h2>
-                        {labels.accessDenied}
-                    </h2>
-                </div>
-            </template>
-
-            <template if:true={hasAccess}>
-                <p class="slds-text-body_regular description">
-                    {labels.settingsDescription}
-                </p>
-
-                <div class="form-container">
-                    <lightning-input
-                        data-field="companyName"
-                        type="text"
-                        name="companyName"
-                        label={labels.companyName}
-                        value={companyName}
-                        maxlength="255"
-                        required
-                        disabled={isSaving}
-                        onchange={handleCompanyNameChange}
-                    >
-                    </lightning-input>
-
-                    <lightning-textarea
-                        data-field="keywords"
-                        name="keywords"
-                        label={labels.keywords}
-                        value={keywordsText}
-                        maxlength="32768"
-                        required
-                        disabled={isSaving}
-                        message-when-value-missing=
-                            "Enter at least one keyword."
-                        onchange={handleKeywordsChange}
-                    >
-                    </lightning-textarea>
-
-                    <p class="field-help">
-                        Enter one keyword per line. You can configure
-                        up to 20 keywords.
-                    </p>
-
-                    <lightning-input
-                        data-field="alertId"
-                        type="text"
-                        name="alertId"
-                        label={labels.alertId}
-                        value={alertId}
-                        maxlength="255"
-                        required
-                        disabled={isSaving}
-                        onchange={handleAlertIdChange}
-                    >
-                    </lightning-input>
-
-                    <lightning-input
-                        type="toggle"
-                        name="syncEnabled"
-                        label={labels.syncEnabled}
-                        checked={syncEnabled}
-                        disabled={isSaving}
-                        onchange={handleSyncEnabledChange}
-                    >
-                    </lightning-input>
-                </div>
-
-                <template if:true={hasSavedConfiguration}>
-                    <section
-                        class="configuration-summary"
-                        aria-labelledby="configuration-summary-heading"
-                    >
-                        <h3
-                            id="configuration-summary-heading"
-                            class="slds-text-heading_small"
-                        >
-                            Configuration Details
-                        </h3>
-
-                        <dl class="summary-grid">
-                            <div>
-                                <dt>Configuration</dt>
-                                <dd>{configurationNumber}</dd>
-                            </div>
-
-                            <div>
-                                <dt>SocioWatch Company ID</dt>
-                                <dd>{companyId}</dd>
-                            </div>
-
-                            <div>
-                                <dt>Last Sync Status</dt>
-                                <dd>{lastSyncStatus}</dd>
-                            </div>
-
-                            <div>
-                                <dt>Last Successful Sync</dt>
-                                <dd>
-                                    <template if:true={lastSuccessfulSync}>
-                                        <lightning-formatted-date-time
-                                            value={lastSuccessfulSync}
-                                            year="numeric"
-                                            month="short"
-                                            day="2-digit"
-                                            hour="2-digit"
-                                            minute="2-digit"
-                                        >
-                                        </lightning-formatted-date-time>
-                                    </template>
-
-                                    <template if:false={lastSuccessfulSync}>
-                                        Not available
-                                    </template>
-                                </dd>
-                            </div>
-                        </dl>
-                    </section>
-                </template>
-
-                <div class="button-container">
-                    <lightning-button
-                        variant="neutral"
-                        label={labels.syncNow}
-                        disabled={isSyncDisabled}
-                        onclick={handleSync}
-                    >
-                    </lightning-button>
-
-                    <lightning-button
-                        variant="brand"
-                        label={labels.save}
-                        disabled={isSaveDisabled}
-                        onclick={handleSave}
-                    >
-                    </lightning-button>
-                </div>
-            </template>
+              alternative-text={saveProgressAlternativeText}
+              size="medium"
+            ></lightning-spinner>
+          </div>
+          <h2>{saveProgressTitle}</h2>
+          <p>{saveProgressMessage}</p>
+          <template if:true={isVerifyingGoogleProfile}>
+            <small>
+              This may take up to 90 seconds. Keep this page open while we
+              finish checking.
+            </small>
+          </template>
         </div>
-    </lightning-card>
+      </section>
+    </template>
+
+    <template if:true={isLoading}>
+      <div class="loading-state">
+        <lightning-spinner
+          alternative-text="Loading SocioWatch settings"
+          size="medium"
+        ></lightning-spinner>
+      </div>
+    </template>
+
+    <template if:false={hasAccess}>
+      <template if:false={isLoading}>
+        <section class="access-error" role="alert">
+          <lightning-icon
+            icon-name="utility:lock"
+            size="small"
+            alternative-text="Access denied"
+          ></lightning-icon>
+          <div>
+            <h2>Settings access required</h2>
+            <p>{labels.accessDenied}</p>
+          </div>
+        </section>
+      </template>
+    </template>
+
+    <template if:true={hasAccess}>
+      <header class="settings-hero">
+        <div class="hero-title">
+          <img
+            class="settings-logo"
+            src={logoUrl}
+            alt="SocioWatch — Mentions Converted to Intelligence"
+          />
+          <div>
+            <p class="eyebrow">WORKSPACE SETUP</p>
+            <h1>Settings</h1>
+            <p>
+              Control what SocioWatch monitors and keep your intelligence feed
+              current.
+            </p>
+          </div>
+        </div>
+        <template if:true={hasSavedConfiguration}>
+          <span class={monitoringBadgeClass}
+            ><span class="status-dot"></span>{monitoringStatus}</span
+          >
+        </template>
+      </header>
+
+      <div class="settings-grid">
+        <section class="form-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="section-number">01</p>
+              <h2>Company profile</h2>
+              <p>Tell us which brand and website this workspace represents.</p>
+            </div>
+          </div>
+          <div class="profile-grid">
+            <lightning-input
+              data-field="companyName"
+              type="text"
+              name="companyName"
+              label="Company Name (match Google Business Profile)"
+              value={companyName}
+              maxlength="255"
+              required
+              disabled={isSaving}
+              onchange={handleCompanyNameChange}
+            ></lightning-input>
+            <lightning-input
+              data-field="website"
+              type="url"
+              name="website"
+              label="Company Website"
+              value={website}
+              maxlength="255"
+              required
+              disabled={isSaving}
+              message-when-type-mismatch="Enter a valid website URL, including https://."
+              onchange={handleWebsiteChange}
+            ></lightning-input>
+          </div>
+
+          <div class="section-divider"></div>
+          <div class="panel-heading">
+            <div>
+              <p class="section-number">02</p>
+              <h2>Primary business location</h2>
+              <p>
+                This address location will be used as the primary location for
+                Google reviews.
+              </p>
+            </div>
+          </div>
+          <div class="location-grid">
+            <lightning-input
+              data-field="companyCity"
+              type="text"
+              name="companyCity"
+              label="City"
+              value={companyCity}
+              maxlength="100"
+              required
+              disabled={isSaving}
+              autocomplete="address-level2"
+              onchange={handleCompanyCityChange}
+            ></lightning-input>
+            <lightning-input
+              data-field="companyStateProvince"
+              type="text"
+              name="companyStateProvince"
+              label="State or Province"
+              value={companyStateProvince}
+              maxlength="100"
+              required
+              disabled={isSaving}
+              autocomplete="address-level1"
+              onchange={handleCompanyStateProvinceChange}
+            ></lightning-input>
+            <lightning-input
+              data-field="companyCountry"
+              type="text"
+              name="companyCountry"
+              label="Country"
+              value={companyCountry}
+              maxlength="100"
+              required
+              disabled={isSaving}
+              autocomplete="country-name"
+              onchange={handleCompanyCountryChange}
+            ></lightning-input>
+          </div>
+          <template if:true={hasGoogleReviewsResolutionStatus}>
+            <div
+              class={googleReviewsStatusClass}
+              role="status"
+              aria-live="polite"
+            >
+              <template if:true={showInlineGoogleReviewsSpinner}>
+                <div class="google-reviews-spinner">
+                  <lightning-spinner
+                    alternative-text="Verifying Google Business Profile"
+                    size="small"
+                  ></lightning-spinner>
+                </div>
+              </template>
+              <span>{googleReviewsStatusText}</span>
+            </div>
+          </template>
+          <div class="section-divider"></div>
+          <div class="panel-heading">
+            <div>
+              <p class="section-number">03</p>
+              <h2>LLM mentions</h2>
+              <p>
+                Choose the single company or brand keyword SocioWatch should
+                track in AI-generated answers such as ChatGPT.
+              </p>
+            </div>
+          </div>
+          <div class="profile-grid">
+            <lightning-input
+              data-field="llmMentionKeyword"
+              type="text"
+              name="llmMentionKeyword"
+              label="Keyword to track"
+              value={llmMentionKeyword}
+              maxlength="250"
+              placeholder="Your company or brand name"
+              required
+              disabled={isSaving}
+              onchange={handleLlmMentionKeywordChange}
+            ></lightning-input>
+          </div>
+          <p class="field-help">
+            We recommend using your company name. This keyword is matched
+            against LLM-generated answers, not just the user's question.
+          </p>
+
+          <div class="section-divider"></div>
+          <div class="panel-heading">
+            <div>
+              <p class="section-number">04</p>
+              <h2>Automatic mention linking</h2>
+              <p>
+                Match each new mention's Author Name to a field on a Salesforce
+                object and link the matching record.
+              </p>
+            </div>
+          </div>
+          <div class="review-control">
+            <div>
+              <h3>Link new mentions by author</h3>
+              <p>
+                A link is created only when one Salesforce record matches the
+                author name exactly. Duplicate matches are left unlinked.
+              </p>
+            </div>
+            <lightning-input
+              type="toggle"
+              name="autoLinkMentions"
+              label="Link new mentions by author"
+              variant="label-hidden"
+              message-toggle-active="Enabled"
+              message-toggle-inactive="Disabled"
+              checked={autoLinkMentions}
+              disabled={isSaving}
+              onchange={handleAutoLinkMentionsChange}
+            ></lightning-input>
+          </div>
+          <template if:true={autoLinkMentions}>
+            <div class="profile-grid">
+              <lightning-input
+                data-field="authorMatchObjectApiName"
+                type="text"
+                name="authorMatchObjectApiName"
+                label="Object API Name"
+                value={authorMatchObjectApiName}
+                maxlength="255"
+                placeholder="Account"
+                required
+                disabled={isSaving}
+                onchange={handleAuthorMatchObjectChange}
+              ></lightning-input>
+              <lightning-input
+                data-field="authorMatchFieldApiName"
+                type="text"
+                name="authorMatchFieldApiName"
+                label="Match Field API Name"
+                value={authorMatchFieldApiName}
+                maxlength="255"
+                placeholder="Name"
+                required
+                disabled={isSaving}
+                onchange={handleAuthorMatchFieldChange}
+              ></lightning-input>
+            </div>
+            <p class="field-help">
+              Example: use Account and Name to link an author named Acme to the
+              Account whose Name is Acme.
+            </p>
+          </template>
+
+          <div class="section-divider"></div>
+          <div class="panel-heading keyword-heading">
+            <div>
+              <p class="section-number">05</p>
+              <h2>Tracked keywords</h2>
+              <p>
+                Add brand names, products, services, or topics worth monitoring.
+              </p>
+            </div>
+            <span class="keyword-count">{keywordCount} / 20</span>
+          </div>
+          <div class="keyword-manager">
+            <template if:true={hasKeywords}>
+              <div class="keyword-pills" aria-label="Tracked keywords">
+                <template for:each={keywordItems} for:item="keyword">
+                  <span class="keyword-pill" key={keyword.key}>
+                    <span>{keyword.label}</span>
+                    <button
+                      type="button"
+                      title="Remove keyword"
+                      aria-label={keyword.removeLabel}
+                      data-keyword={keyword.label}
+                      disabled={isSaving}
+                      onclick={handleRemoveKeyword}
+                    >
+                      <lightning-icon
+                        icon-name="utility:close"
+                        size="xx-small"
+                        alternative-text=""
+                      ></lightning-icon>
+                    </button>
+                  </span>
+                </template>
+              </div>
+            </template>
+
+            <template if:false={hasKeywords}>
+              <div class="keyword-empty">
+                <lightning-icon
+                  icon-name="utility:search"
+                  size="small"
+                  alternative-text=""
+                ></lightning-icon>
+                <span>Add your first tracked keyword below.</span>
+              </div>
+            </template>
+
+            <div class="keyword-add-row">
+              <lightning-input
+                class="keyword-input"
+                data-field="keywords"
+                type="text"
+                name="keywordDraft"
+                label="Add a tracked keyword"
+                variant="label-hidden"
+                value={keywordDraft}
+                maxlength="100"
+                placeholder="Type a keyword or phrase"
+                disabled={isSaving}
+                onchange={handleKeywordDraftChange}
+                onkeydown={handleKeywordKeyDown}
+              ></lightning-input>
+              <lightning-button
+                variant="brand-outline"
+                label="Add keyword"
+                icon-name="utility:add"
+                disabled={isKeywordAddDisabled}
+                onclick={handleAddKeyword}
+              ></lightning-button>
+            </div>
+
+            <template if:true={hasKeywordSuggestions}>
+              <div class="keyword-suggestions">
+                <div class="suggestion-heading">
+                  <span>
+                    <lightning-icon
+                      icon-name="utility:light_bulb"
+                      size="xx-small"
+                      alternative-text=""
+                    ></lightning-icon>
+                    Suggested for {companyName}
+                  </span>
+                  <small>Click to add</small>
+                </div>
+
+                <div class="suggestion-pills">
+                  <template for:each={keywordSuggestions} for:item="suggestion">
+                    <button
+                      type="button"
+                      key={suggestion.key}
+                      data-keyword={suggestion.label}
+                      disabled={suggestion.disabled}
+                      onclick={handleAddSuggestion}
+                    >
+                      <lightning-icon
+                        icon-name="utility:add"
+                        size="xx-small"
+                        alternative-text=""
+                      ></lightning-icon>
+                      {suggestion.label}
+                    </button>
+                  </template>
+                </div>
+              </div>
+            </template>
+          </div>
+          <p class="field-help">
+            Press Enter to add. Paste comma-separated keywords to add several at
+            once.
+          </p>
+
+          <div class="section-divider"></div>
+          <div class="monitor-control">
+            <div>
+              <p class="section-number">05</p>
+              <h2>Monitoring</h2>
+              <p>Keep background collection and synchronization enabled.</p>
+            </div>
+            <lightning-input
+              type="toggle"
+              name="syncEnabled"
+              label="Enable Monitoring"
+              variant="label-hidden"
+              message-toggle-active="Active"
+              message-toggle-inactive="Paused"
+              checked={syncEnabled}
+              disabled={isSaving}
+              onchange={handleSyncEnabledChange}
+            ></lightning-input>
+          </div>
+
+          <div class="form-actions">
+            <lightning-button
+              variant="neutral"
+              label={labels.syncNow}
+              icon-name="utility:sync"
+              disabled={isSyncDisabled}
+              onclick={handleSync}
+            ></lightning-button>
+            <lightning-button
+              variant="brand"
+              label={labels.save}
+              icon-name="utility:save"
+              disabled={isSaveDisabled}
+              onclick={handleSave}
+            ></lightning-button>
+          </div>
+        </section>
+
+        <aside class="status-panel">
+          <div class="status-heading">
+            <span class="pulse-icon"><span></span></span>
+            <div>
+              <p class="status-eyebrow">SYSTEM HEALTH</p>
+              <h2>Connection status</h2>
+            </div>
+          </div>
+
+          <template if:true={hasSavedConfiguration}>
+            <dl class="summary-list">
+              <div>
+                <dt>Configuration</dt>
+                <dd>{configurationNumber}</dd>
+              </div>
+              <div>
+                <dt>Monitoring</dt>
+                <dd>
+                  <span class={monitoringBadgeClass}
+                    ><span class="status-dot"></span>{monitoringStatus}</span
+                  >
+                </dd>
+              </div>
+              <div>
+                <dt>Last sync</dt>
+                <dd><span class={syncBadgeClass}>{lastSyncStatus}</span></dd>
+              </div>
+              <div>
+                <dt>Last successful sync</dt>
+                <dd>
+                  <template if:true={lastSuccessfulSync}>
+                    <lightning-formatted-date-time
+                      value={lastSuccessfulSync}
+                      year="numeric"
+                      month="short"
+                      day="2-digit"
+                      hour="2-digit"
+                      minute="2-digit"
+                    ></lightning-formatted-date-time>
+                  </template>
+                  <template if:false={lastSuccessfulSync}
+                    >Not available</template
+                  >
+                </dd>
+              </div>
+              <div class="company-id">
+                <dt>SocioWatch Company ID</dt>
+                <dd>{companyId}</dd>
+              </div>
+            </dl>
+            <div class="status-note">
+              <lightning-icon
+                icon-name="utility:info"
+                size="xx-small"
+                alternative-text="Information"
+              ></lightning-icon>
+              <p>
+                Sync Now requests an immediate collection. Mentions appear as
+                they are processed and inserted.
+              </p>
+            </div>
+          </template>
+
+          <template if:false={hasSavedConfiguration}>
+            <div class="not-configured">
+              <lightning-icon
+                icon-name="utility:setup"
+                size="large"
+                alternative-text=""
+              ></lightning-icon>
+              <h3>Ready to connect</h3>
+              <p>Complete the form and save to create this workspace.</p>
+            </div>
+          </template>
+        </aside>
+      </div>
+    </template>
+  </main>
 </template>
