@@ -60,6 +60,18 @@
         <viewAllRecords>false</viewAllRecords>
     </objectPermissions>
 
+    <!-- Required for authenticated callouts that use a named principal. -->
+    <objectPermissions>
+        <allowCreate>false</allowCreate>
+        <allowDelete>false</allowDelete>
+        <allowEdit>false</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>false</modifyAllRecords>
+        <object>UserExternalCredential</object>
+        <viewAllFields>false</viewAllFields>
+        <viewAllRecords>true</viewAllRecords>
+    </objectPermissions>
+
     <!-- Non-required Configuration fields -->
     <fieldPermissions>
         <editable>false</editable>

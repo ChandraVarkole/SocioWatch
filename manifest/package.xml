@@ -38,6 +38,11 @@
 
     <types>
         <members>*</members>
+        <name>ExternalCredential</name>
+    </types>
+
+    <types>
+        <members>*</members>
         <name>CustomTab</name>
     </types>
 
@@ -53,7 +58,17 @@
 
     <types>
         <members>*</members>
+        <name>NamedCredential</name>
+    </types>
+
+    <types>
+        <members>*</members>
         <name>PermissionSet</name>
+    </types>
+
+    <types>
+        <members>*</members>
+        <name>QuickAction</name>
     </types>
 
     <types>

@@ -1,9 +1,17 @@
 @IsTest
 private class SocioWatchDashboardControllerTest {
   private static final String COMPANY_ID = 'COMP-000001';
+  private static final String DASHBOARD_USER_ALIAS = 'swdash';
 
   @TestSetup
-  static void createMentions() {
+  static void createPermissionedUser() {
+    SocioWatchTestUserFactory.createUserWithPermissionSet(
+      DASHBOARD_USER_ALIAS,
+      'SocioWatch_Admin'
+    );
+  }
+
+  private static void createMentions() {
     SocioWatch_Configuration__c configuration = new SocioWatch_Configuration__c(
       Company_Name__c = 'Dashboard Test',
       Keywords__c = 'Dashboard Test',
@@ -66,112 +74,130 @@ private class SocioWatchDashboardControllerTest {
 
   @IsTest
   static void returnsManagementSummaryForSelectedPeriod() {
-    setTrialMock('TRIAL', 7);
+    System.runAs(SocioWatchTestUserFactory.getUser(DASHBOARD_USER_ALIAS)) {
+      createMentions();
+      setTrialMock('TRIAL', 7);
 
-    Test.startTest();
-    SocioWatchDashboardController.DashboardData data = SocioWatchDashboardController.getDashboard(
-      30
-    );
-    Test.stopTest();
+      Test.startTest();
+      SocioWatchDashboardController.DashboardData data = SocioWatchDashboardController.getDashboard(
+        30
+      );
+      Test.stopTest();
 
-    System.assertEquals(3, data.totalMentions);
-    System.assertEquals(1, data.newMentions);
-    System.assertEquals(2, data.attentionMentions);
-    System.assertEquals(1, data.negativeMentions);
-    System.assertEquals(true, data.showTrialBanner);
-    System.assertEquals(7, data.trialDaysRemaining);
-    System.assertEquals(3, data.recentMentions.size());
-    System.assertEquals(14, data.dailyTrend.size());
-    Set<String> sourceLabels = new Set<String>();
-    for (SocioWatchDashboardController.BreakdownItem source : data.sources) {
-      sourceLabels.add(source.label);
+      System.assertEquals(3, data.totalMentions);
+      System.assertEquals(1, data.newMentions);
+      System.assertEquals(2, data.attentionMentions);
+      System.assertEquals(1, data.negativeMentions);
+      System.assertEquals(true, data.showTrialBanner);
+      System.assertEquals(7, data.trialDaysRemaining);
+      System.assertEquals(3, data.recentMentions.size());
+      System.assertEquals(14, data.dailyTrend.size());
+      Set<String> sourceLabels = new Set<String>();
+      for (SocioWatchDashboardController.BreakdownItem source : data.sources) {
+        sourceLabels.add(source.label);
+      }
+      System.assertEquals(
+        new Set<String>{ 'X', 'YouTube', 'News' },
+        sourceLabels
+      );
     }
-    System.assertEquals(
-      new Set<String>{ 'X', 'YouTube', 'News' },
-      sourceLabels
-    );
   }
 
   @IsTest
   static void hidesTrialBannerForFullLicense() {
-    SocioWatch_Configuration__c configuration = [
-      SELECT Id, Full_License__c
-      FROM SocioWatch_Configuration__c
-      LIMIT 1
-    ];
-    configuration.Full_License__c = true;
-    update configuration;
+    System.runAs(SocioWatchTestUserFactory.getUser(DASHBOARD_USER_ALIAS)) {
+      createMentions();
+      SocioWatch_Configuration__c configuration = [
+        SELECT Id, Full_License__c
+        FROM SocioWatch_Configuration__c
+        LIMIT 1
+      ];
+      configuration.Full_License__c = true;
+      update configuration;
 
-    Test.startTest();
-    SocioWatchDashboardController.DashboardData data = SocioWatchDashboardController.getDashboard(
-      30
-    );
-    Test.stopTest();
+      Test.startTest();
+      SocioWatchDashboardController.DashboardData data = SocioWatchDashboardController.getDashboard(
+        30
+      );
+      Test.stopTest();
 
-    System.assertEquals(false, data.showTrialBanner);
-    System.assertEquals(0, data.trialDaysRemaining);
+      System.assertEquals(false, data.showTrialBanner);
+      System.assertEquals(0, data.trialDaysRemaining);
+    }
   }
 
   @IsTest
   static void supportsAllTimeAndDefaultsInvalidPeriods() {
-    setTrialMock('TRIAL', 7);
+    System.runAs(SocioWatchTestUserFactory.getUser(DASHBOARD_USER_ALIAS)) {
+      createMentions();
+      setTrialMock('TRIAL', 7);
 
-    SocioWatchDashboardController.DashboardData allTime = SocioWatchDashboardController.getDashboard(
-      0
-    );
-    SocioWatchDashboardController.DashboardData defaultPeriod = SocioWatchDashboardController.getDashboard(
-      12
-    );
+      SocioWatchDashboardController.DashboardData allTime = SocioWatchDashboardController.getDashboard(
+        0
+      );
+      SocioWatchDashboardController.DashboardData defaultPeriod = SocioWatchDashboardController.getDashboard(
+        12
+      );
 
-    System.assertEquals(4, allTime.totalMentions);
-    System.assertEquals(0, allTime.periodDays);
-    System.assertEquals(30, defaultPeriod.periodDays);
+      System.assertEquals(4, allTime.totalMentions);
+      System.assertEquals(0, allTime.periodDays);
+      System.assertEquals(30, defaultPeriod.periodDays);
+    }
   }
 
   @IsTest
   static void hidesTrialBeforeConfigurationExists() {
-    delete [SELECT Id FROM SocioWatch_Mention__c];
-    delete [SELECT Id FROM SocioWatch_Configuration__c];
+    System.runAs(SocioWatchTestUserFactory.getUser(DASHBOARD_USER_ALIAS)) {
+      createMentions();
+      delete [SELECT Id FROM SocioWatch_Mention__c];
+      delete [SELECT Id FROM SocioWatch_Configuration__c];
 
-    Test.startTest();
-    SocioWatchDashboardController.DashboardData data = SocioWatchDashboardController.getDashboard(
-      30
-    );
-    Test.stopTest();
+      Test.startTest();
+      SocioWatchDashboardController.DashboardData data = SocioWatchDashboardController.getDashboard(
+        30
+      );
+      Test.stopTest();
 
-    System.assertEquals(false, data.showTrialBanner);
-    System.assertEquals(0, data.trialDaysRemaining);
+      System.assertEquals(false, data.showTrialBanner);
+      System.assertEquals(0, data.trialDaysRemaining);
+    }
   }
 
   @IsTest
   static void displaysAwsTrialExtension() {
-    setTrialMock('TRIAL', 12);
+    System.runAs(SocioWatchTestUserFactory.getUser(DASHBOARD_USER_ALIAS)) {
+      createMentions();
+      setTrialMock('TRIAL', 12);
 
-    Test.startTest();
-    SocioWatchDashboardController.DashboardData data = SocioWatchDashboardController.getDashboard(
-      30
-    );
-    Test.stopTest();
+      Test.startTest();
+      SocioWatchDashboardController.DashboardData data = SocioWatchDashboardController.getDashboard(
+        30
+      );
+      Test.stopTest();
 
-    System.assertEquals(true, data.showTrialBanner);
-    System.assertEquals(12, data.trialDaysRemaining);
+      System.assertEquals(true, data.showTrialBanner);
+      System.assertEquals(12, data.trialDaysRemaining);
+    }
   }
 
   @IsTest
   static void keepsDashboardAvailableWhenTrialStatusIsUnavailable() {
-    Test.setMock(
-      HttpCalloutMock.class,
-      new SocioWatchHttpMock(500, '{"message":"Unavailable"}')
-    );
+    System.runAs(SocioWatchTestUserFactory.getUser(DASHBOARD_USER_ALIAS)) {
+      createMentions();
+      Test.setMock(
+        HttpCalloutMock.class,
+        new SocioWatchHttpMock(500, '{"message":"Unavailable"}')
+      );
 
-    Test.startTest();
-    SocioWatchDashboardController.DashboardData data = SocioWatchDashboardController.getDashboard(
-      30
-    );
-    Test.stopTest();
+      Test.startTest();
+      SocioWatchDashboardController.DashboardData data = SocioWatchDashboardController.getDashboard(
+        30
+      );
+      Test.stopTest();
 
-    System.assertEquals(3, data.totalMentions);
-    System.assertEquals(false, data.showTrialBanner);
+      System.assertEquals(3, data.totalMentions);
+      System.assertEquals(false, data.showTrialBanner);
+    }
   }
 
   private static void setTrialMock(String status, Integer daysRemaining) {

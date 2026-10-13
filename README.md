@@ -19,8 +19,8 @@ SocioWatch AWS resources used by this project are in `us-east-2`.
 
 ## First-time setup
 
-1. Install the package and configure the `SocioWatch_API` Named Credential and
-   External Credential as described in
+1. Deploy or install the package, then populate the secret token on the
+   source-controlled `SocioWatch_API_Authentication` External Credential as described in
    [`docs/named-credential-setup.md`](docs/named-credential-setup.md).
 2. Assign `SocioWatch Admin` to administrators. Assign `SocioWatch User` to
    users who need the dashboard and chat experience.
