@@ -17,6 +17,11 @@ public class SocioWatchConstants {
   public static final String MENTION_RELEVANCE_ENDPOINT = '/v1/mentions/relevance';
   public static final String CHAT_ENDPOINT = '/v1/chat';
   public static final String SYNC_ENDPOINT = '/v1/sync';
+  public static final String META_STATUS_ENDPOINT = '/v1/integrations/meta/status';
+  public static final String META_CONNECT_ENDPOINT = '/v1/integrations/meta/connect';
+  public static final String META_SELECT_ENDPOINT = '/v1/integrations/meta/select';
+  public static final String META_DISCONNECT_ENDPOINT = '/v1/integrations/meta/disconnect';
+  public static final String META_ACKNOWLEDGEMENT_VERSION = '2026-10-15';
 
   // Custom permissions
   public static final String PERMISSION_MANAGE_SETTINGS = 'SocioWatch_Manage_Settings';

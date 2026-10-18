@@ -11,6 +11,14 @@ import saveSettings from "@salesforce/apex/SocioWatchSettingsController.saveSett
 
 import getGoogleReviewsStatus from "@salesforce/apex/SocioWatchSettingsController.getGoogleReviewsStatus";
 
+import getMetaConnection from "@salesforce/apex/SocioWatchMetaController.getConnection";
+
+import startMetaConnection from "@salesforce/apex/SocioWatchMetaController.startConnection";
+
+import saveMetaSelection from "@salesforce/apex/SocioWatchMetaController.saveSelection";
+
+import disconnectMeta from "@salesforce/apex/SocioWatchMetaController.disconnect";
+
 import startSync from "@salesforce/apex/SocioWatchSyncController.startSync";
 
 import SETTINGS_TITLE from "@salesforce/label/c.SocioWatch_Settings_Title";
@@ -33,6 +41,9 @@ import UNEXPECTED_ERROR from "@salesforce/label/c.SocioWatch_Unexpected_Error";
 
 const MAX_KEYWORD_COUNT = 20;
 const MAX_KEYWORD_LENGTH = 100;
+const META_OAUTH_MESSAGE_TYPE = "SOCIOWATCH_META_OAUTH";
+const META_MODE_FACEBOOK = "FACEBOOK";
+const META_MODE_FACEBOOK_AND_INSTAGRAM = "FACEBOOK_AND_INSTAGRAM";
 const KEYWORD_SUGGESTION_SUFFIXES = [
   "Customer Support",
   "Products",
@@ -76,6 +87,22 @@ export default class SocioWatchSettings extends LightningElement {
   isSaving = false;
   isVerifyingGoogleProfile = false;
   isSyncing = false;
+  isMetaLoading = false;
+  isMetaModalOpen = false;
+  metaStatus = "";
+  metaMonitoringMode = META_MODE_FACEBOOK;
+  metaMessage = "";
+  metaAvailablePages = [];
+  metaSelectedPageIds = [];
+  metaConnection;
+  confirmsFacebookPage = false;
+  confirmsFacebookControl = false;
+  confirmsInstagramProfessional = false;
+  confirmsInstagramLinked = false;
+  confirmsAccountAuthority = false;
+  confirmsReadOnlyAccess = false;
+  metaOauthWindow;
+  boundMetaOauthMessageHandler;
 
   labels = {
     settingsTitle: SETTINGS_TITLE,
@@ -90,11 +117,137 @@ export default class SocioWatchSettings extends LightningElement {
   };
 
   connectedCallback() {
+    this.boundMetaOauthMessageHandler = this.handleMetaOauthMessage.bind(this);
+    window.addEventListener("message", this.boundMetaOauthMessageHandler);
     this.initialize();
+  }
+
+  disconnectedCallback() {
+    if (this.boundMetaOauthMessageHandler) {
+      window.removeEventListener("message", this.boundMetaOauthMessageHandler);
+    }
   }
 
   get hasSavedConfiguration() {
     return Boolean(this.configurationId);
+  }
+
+  get showMetaAddOnBanner() {
+    return this.hasSavedConfiguration && this.metaStatus === "ADD_ON_REQUIRED";
+  }
+
+  get showMetaConnectionControl() {
+    return this.hasSavedConfiguration && this.metaStatus !== "ADD_ON_REQUIRED";
+  }
+
+  get isMetaConnected() {
+    return this.metaStatus === "CONNECTED";
+  }
+
+  get isMetaPendingSelection() {
+    return this.metaStatus === "PENDING_SELECTION";
+  }
+
+  get isMetaNotConnected() {
+    return ["", "NOT_CONNECTED", "ACTION_REQUIRED", "ERROR"].includes(
+      this.metaStatus
+    );
+  }
+
+  get isMetaActionRequired() {
+    return this.metaStatus === "ACTION_REQUIRED";
+  }
+
+  get metaControlStatusText() {
+    if (this.isMetaConnected) {
+      return this.metaConnectionLabel;
+    }
+    if (this.isMetaPendingSelection) {
+      return "Account selection required";
+    }
+    if (this.isMetaActionRequired) {
+      return "Connection expired — reconnect with Meta";
+    }
+    if (this.metaStatus === "ERROR") {
+      return this.metaMessage || "Connection status unavailable";
+    }
+    return "Not connected";
+  }
+
+  get metaControlClass() {
+    return this.isMetaConnected
+      ? "meta-connection-control connected"
+      : "meta-connection-control";
+  }
+
+  get showMetaPrerequisites() {
+    return !this.isMetaConnected && !this.isMetaPendingSelection;
+  }
+
+  get isFacebookAndInstagramMode() {
+    return this.metaMonitoringMode === META_MODE_FACEBOOK_AND_INSTAGRAM;
+  }
+
+  get metaModeOptions() {
+    return [
+      {
+        label: "Facebook only",
+        value: META_MODE_FACEBOOK
+      },
+      {
+        label: "Facebook + Instagram",
+        value: META_MODE_FACEBOOK_AND_INSTAGRAM
+      }
+    ];
+  }
+
+  get metaPageOptions() {
+    return (this.metaAvailablePages || []).map((page) => {
+      const instagramUsername = page.instagramAccount?.username;
+      const suffix = instagramUsername
+        ? ` · Instagram @${instagramUsername}`
+        : "";
+      return {
+        label: `${page.pageName}${suffix}`,
+        value: page.pageId
+      };
+    });
+  }
+
+  get connectedFacebookPages() {
+    return this.metaConnection?.facebookPages || [];
+  }
+
+  get connectedInstagramAccounts() {
+    return this.metaConnection?.instagramAccounts || [];
+  }
+
+  get hasConnectedInstagramAccounts() {
+    return this.connectedInstagramAccounts.length > 0;
+  }
+
+  get metaConnectionLabel() {
+    return this.hasConnectedInstagramAccounts
+      ? "Facebook + Instagram connected"
+      : "Facebook connected";
+  }
+
+  get isMetaConnectDisabled() {
+    const instagramConfirmed =
+      !this.isFacebookAndInstagramMode ||
+      (this.confirmsInstagramProfessional && this.confirmsInstagramLinked);
+    return (
+      this.isMetaLoading ||
+      !this.confirmsFacebookPage ||
+      !this.confirmsFacebookControl ||
+      !instagramConfirmed ||
+      !this.confirmsAccountAuthority ||
+      !this.confirmsReadOnlyAccess
+    );
+  }
+
+  get isMetaSelectionDisabled() {
+    return this.isMetaLoading || this.metaSelectedPageIds.length === 0;
   }
 
   get monitoringStatus() {
@@ -267,6 +420,7 @@ export default class SocioWatchSettings extends LightningElement {
 
       if (this.companyId) {
         await this.refreshGoogleReviewsStatus();
+        await this.refreshMetaConnection();
       }
     } catch (error) {
       this.hasAccess = false;
@@ -432,6 +586,219 @@ export default class SocioWatchSettings extends LightningElement {
 
   handleSyncEnabledChange(event) {
     this.syncEnabled = event.target.checked;
+  }
+
+  async refreshMetaConnection() {
+    if (!this.companyId) {
+      this.metaStatus = "";
+      return;
+    }
+
+    this.isMetaLoading = true;
+    try {
+      const response = await getMetaConnection();
+      this.applyMetaConnection(response);
+    } catch (error) {
+      this.metaStatus = "ERROR";
+      this.metaMessage = this.extractSafeErrorMessage(error);
+    } finally {
+      this.isMetaLoading = false;
+    }
+  }
+
+  applyMetaConnection(response) {
+    this.metaStatus = response?.status || "NOT_CONNECTED";
+    this.metaMonitoringMode =
+      response?.monitoringMode ||
+      response?.connection?.monitoringMode ||
+      this.metaMonitoringMode ||
+      META_MODE_FACEBOOK;
+    this.metaMessage = response?.message || "";
+    this.metaAvailablePages = response?.availablePages || [];
+    this.metaConnection = response?.connection;
+
+    if (this.metaStatus === "PENDING_SELECTION") {
+      this.metaSelectedPageIds = this.metaAvailablePages.map(
+        (page) => page.pageId
+      );
+    } else {
+      this.metaSelectedPageIds = [];
+    }
+  }
+
+  async handleOpenMetaModal() {
+    this.isMetaModalOpen = true;
+    await this.refreshMetaConnection();
+  }
+
+  handleCloseMetaModal() {
+    if (!this.isMetaLoading) {
+      this.isMetaModalOpen = false;
+    }
+  }
+
+  handleMetaModeChange(event) {
+    this.metaMonitoringMode = event.detail.value;
+    this.confirmsInstagramProfessional = false;
+    this.confirmsInstagramLinked = false;
+  }
+
+  handleMetaConfirmationChange(event) {
+    const fieldName = event.target.name;
+    if (Object.prototype.hasOwnProperty.call(this, fieldName)) {
+      this[fieldName] = event.target.checked;
+    }
+  }
+
+  async handleStartMetaConnection() {
+    if (this.isMetaConnectDisabled) {
+      return;
+    }
+
+    const oauthWindow = window.open(
+      "",
+      "sociowatchMetaOAuth",
+      "popup=yes,width=720,height=760,resizable=yes,scrollbars=yes"
+    );
+    if (!oauthWindow) {
+      this.dispatchEvent(
+        new ShowToastEvent({
+          title: "Allow pop-ups to continue",
+          message:
+            "Allow pop-ups for Salesforce, then choose Connect with Meta again.",
+          variant: "warning"
+        })
+      );
+      return;
+    }
+
+    this.metaOauthWindow = oauthWindow;
+    this.isMetaLoading = true;
+    try {
+      const response = await startMetaConnection({
+        monitoringMode: this.metaMonitoringMode,
+        returnOrigin: window.location.origin
+      });
+      if (!response?.authorizationUrl) {
+        throw new Error(
+          "SocioWatch did not return a Meta authorization address."
+        );
+      }
+      oauthWindow.location.replace(response.authorizationUrl);
+    } catch (error) {
+      oauthWindow.close();
+      this.showError(error);
+    } finally {
+      this.isMetaLoading = false;
+    }
+  }
+
+  async handleMetaOauthMessage(event) {
+    if (event?.data?.type !== META_OAUTH_MESSAGE_TYPE) {
+      return;
+    }
+
+    this.metaOauthWindow = undefined;
+    if (event.data.result === "cancelled") {
+      this.dispatchEvent(
+        new ShowToastEvent({
+          title: "Meta connection cancelled",
+          message: "No account access was changed.",
+          variant: "info"
+        })
+      );
+      return;
+    }
+
+    await this.refreshMetaConnection();
+    if (event.data.result !== "authorized") {
+      this.dispatchEvent(
+        new ShowToastEvent({
+          title: "Meta connection not completed",
+          message:
+            this.metaMessage ||
+            "Review the prerequisites and try connecting again.",
+          variant: "error"
+        })
+      );
+    }
+  }
+
+  handleMetaPageSelection(event) {
+    this.metaSelectedPageIds = event.detail.value;
+  }
+
+  async handleSaveMetaSelection() {
+    if (this.isMetaSelectionDisabled) {
+      return;
+    }
+
+    this.isMetaLoading = true;
+    try {
+      const response = await saveMetaSelection({
+        facebookPageIds: this.metaSelectedPageIds
+      });
+      this.applyMetaConnection(response);
+      this.dispatchEvent(
+        new ShowToastEvent({
+          title: "Meta monitoring connected",
+          message:
+            "SocioWatch will collect selected Facebook and Instagram activity every three hours.",
+          variant: "success"
+        })
+      );
+    } catch (error) {
+      this.showError(error);
+    } finally {
+      this.isMetaLoading = false;
+    }
+  }
+
+  handlePrepareMetaReconnect() {
+    this.metaStatus = "NOT_CONNECTED";
+    this.metaMessage = "";
+    this.metaAvailablePages = [];
+    this.metaSelectedPageIds = [];
+    this.resetMetaConfirmations();
+  }
+
+  async handleDisconnectMeta() {
+    const confirmed = await LightningConfirm.open({
+      label: "Disconnect Facebook and Instagram?",
+      message:
+        "SocioWatch will revoke the connection and stop future Meta collection. Existing mention records remain available.",
+      theme: "warning"
+    });
+    if (!confirmed) {
+      return;
+    }
+
+    this.isMetaLoading = true;
+    try {
+      const response = await disconnectMeta();
+      this.applyMetaConnection(response);
+      this.resetMetaConfirmations();
+      this.dispatchEvent(
+        new ShowToastEvent({
+          title: "Meta monitoring disconnected",
+          message: "Facebook and Instagram collection has stopped.",
+          variant: "success"
+        })
+      );
+    } catch (error) {
+      this.showError(error);
+    } finally {
+      this.isMetaLoading = false;
+    }
+  }
+
+  resetMetaConfirmations() {
+    this.confirmsFacebookPage = false;
+    this.confirmsFacebookControl = false;
+    this.confirmsInstagramProfessional = false;
+    this.confirmsInstagramLinked = false;
+    this.confirmsAccountAuthority = false;
+    this.confirmsReadOnlyAccess = false;
   }
 
   async handleSave() {

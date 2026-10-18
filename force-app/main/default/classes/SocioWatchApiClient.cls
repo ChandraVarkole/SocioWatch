@@ -36,7 +36,11 @@ public inherited sharing class SocioWatchApiClient {
     '/v1/mentions',
     '/v1/mentions/relevance',
     '/v1/chat',
-    '/v1/sync'
+    '/v1/sync',
+    '/v1/integrations/meta/status',
+    '/v1/integrations/meta/connect',
+    '/v1/integrations/meta/select',
+    '/v1/integrations/meta/disconnect'
   };
 
   /**

@@ -75,6 +75,29 @@
         </template>
       </header>
 
+      <template if:true={showMetaAddOnBanner}>
+        <section class="meta-addon-banner" aria-labelledby="meta-addon-title">
+          <div>
+            <p class="meta-addon-eyebrow">OPTIONAL PAID ADD-ON</p>
+            <h2 id="meta-addon-title">Facebook &amp; Instagram Monitoring</h2>
+            <p>
+              Monitor selected business posts and comments in SocioWatch.
+              Read-only access—SocioWatch never publishes, edits, hides,
+              deletes, or replies to content.
+            </p>
+            <div class="meta-addon-tags">
+              <span>Facebook Pages</span>
+              <span>Instagram Professional</span>
+            </div>
+          </div>
+          <a
+            href="mailto:contact@getsociowatch.com?subject=SocioWatch%20Meta%20Monitoring%20Add-on"
+          >
+            Contact SocioWatch to activate
+          </a>
+        </section>
+      </template>
+
       <div class="settings-grid">
         <section class="form-panel">
           <div class="panel-heading">
@@ -384,7 +407,7 @@
           <div class="section-divider"></div>
           <div class="monitor-control">
             <div>
-              <p class="section-number">05</p>
+              <p class="section-number">06</p>
               <h2>Monitoring</h2>
               <p>Keep background collection and synchronization enabled.</p>
             </div>
@@ -400,6 +423,37 @@
               onchange={handleSyncEnabledChange}
             ></lightning-input>
           </div>
+
+          <template if:true={showMetaConnectionControl}>
+            <div class="section-divider"></div>
+            <div class="panel-heading">
+              <div>
+                <p class="section-number">07</p>
+                <h2>Facebook &amp; Instagram</h2>
+                <p>
+                  Connect business accounts for read-only monitoring. AWS
+                  collects activity every three hours; Salesforce imports it
+                  with the normal mentions sync.
+                </p>
+              </div>
+            </div>
+            <div class={metaControlClass}>
+              <div>
+                <h3>{metaControlStatusText}</h3>
+                <p>
+                  Meta handles login and consent. Salesforce never stores a Meta
+                  password or access token.
+                </p>
+              </div>
+              <lightning-button
+                variant="brand-outline"
+                label="Manage connection"
+                icon-name="utility:link"
+                disabled={isMetaLoading}
+                onclick={handleOpenMetaModal}
+              ></lightning-button>
+            </div>
+          </template>
 
           <div class="form-actions">
             <lightning-button
@@ -495,6 +549,224 @@
           </template>
         </aside>
       </div>
+
+      <template if:true={isMetaModalOpen}>
+        <section
+          class="slds-modal slds-fade-in-open meta-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="meta-modal-title"
+        >
+          <div class="slds-modal__container">
+            <header class="slds-modal__header meta-modal-header">
+              <button
+                class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                title="Close"
+                disabled={isMetaLoading}
+                onclick={handleCloseMetaModal}
+              >
+                <lightning-icon
+                  icon-name="utility:close"
+                  alternative-text="Close"
+                  size="small"
+                  variant="inverse"
+                ></lightning-icon>
+              </button>
+              <p class="meta-modal-eyebrow">READ-ONLY MONITORING</p>
+              <h2 id="meta-modal-title">Facebook &amp; Instagram</h2>
+              <p>
+                Connect accounts you are authorized to manage. SocioWatch reads
+                selected posts and comments and saves their source links.
+              </p>
+            </header>
+
+            <div class="slds-modal__content meta-modal-content">
+              <template if:true={isMetaLoading}>
+                <div class="meta-loading">
+                  <lightning-spinner
+                    alternative-text="Updating Meta connection"
+                    size="medium"
+                  ></lightning-spinner>
+                </div>
+              </template>
+
+              <template if:true={showMetaPrerequisites}>
+                <section class="meta-modal-section">
+                  <span class="meta-step">01</span>
+                  <h3>Choose what to monitor</h3>
+                  <lightning-radio-group
+                    name="metaMonitoringMode"
+                    label="Monitoring option"
+                    options={metaModeOptions}
+                    value={metaMonitoringMode}
+                    type="radio"
+                    disabled={isMetaLoading}
+                    onchange={handleMetaModeChange}
+                  ></lightning-radio-group>
+                </section>
+
+                <section class="meta-modal-section">
+                  <span class="meta-step">02</span>
+                  <h3>Confirm the prerequisites</h3>
+                  <p class="meta-help">
+                    Facebook is required. Instagram monitoring is available when
+                    a Professional account is linked to the Facebook Page.
+                  </p>
+                  <lightning-input
+                    type="checkbox"
+                    name="confirmsFacebookPage"
+                    label="My business has a Facebook Page, not only a personal profile."
+                    checked={confirmsFacebookPage}
+                    disabled={isMetaLoading}
+                    onchange={handleMetaConfirmationChange}
+                  ></lightning-input>
+                  <lightning-input
+                    type="checkbox"
+                    name="confirmsFacebookControl"
+                    label="I have administrator or full-control access to that Page."
+                    checked={confirmsFacebookControl}
+                    disabled={isMetaLoading}
+                    onchange={handleMetaConfirmationChange}
+                  ></lightning-input>
+                  <template if:true={isFacebookAndInstagramMode}>
+                    <lightning-input
+                      type="checkbox"
+                      name="confirmsInstagramProfessional"
+                      label="My Instagram account is a Business or Creator account."
+                      checked={confirmsInstagramProfessional}
+                      disabled={isMetaLoading}
+                      onchange={handleMetaConfirmationChange}
+                    ></lightning-input>
+                    <lightning-input
+                      type="checkbox"
+                      name="confirmsInstagramLinked"
+                      label="The Instagram account is connected to the Facebook Page."
+                      checked={confirmsInstagramLinked}
+                      disabled={isMetaLoading}
+                      onchange={handleMetaConfirmationChange}
+                    ></lightning-input>
+                  </template>
+                  <lightning-input
+                    type="checkbox"
+                    name="confirmsAccountAuthority"
+                    label="I am authorized to connect these business accounts."
+                    checked={confirmsAccountAuthority}
+                    disabled={isMetaLoading}
+                    onchange={handleMetaConfirmationChange}
+                  ></lightning-input>
+                  <div class="meta-consent">
+                    <lightning-input
+                      type="checkbox"
+                      name="confirmsReadOnlyAccess"
+                      label="I authorize SocioWatch to read posts, comments, and related engagement from the business accounts I select."
+                      checked={confirmsReadOnlyAccess}
+                      disabled={isMetaLoading}
+                      onchange={handleMetaConfirmationChange}
+                    ></lightning-input>
+                    <p>
+                      SocioWatch will not create, edit, delete, hide, publish,
+                      or respond to content.
+                    </p>
+                  </div>
+                </section>
+              </template>
+
+              <template if:true={isMetaPendingSelection}>
+                <section class="meta-modal-section">
+                  <span class="meta-step">03</span>
+                  <h3>Select the accounts to monitor</h3>
+                  <p class="meta-help">
+                    Choose one or more Facebook Pages returned by Meta. Linked
+                    Instagram accounts are shown beside their Page.
+                  </p>
+                  <lightning-checkbox-group
+                    name="metaPages"
+                    label="Eligible business accounts"
+                    options={metaPageOptions}
+                    value={metaSelectedPageIds}
+                    disabled={isMetaLoading}
+                    onchange={handleMetaPageSelection}
+                  ></lightning-checkbox-group>
+                </section>
+              </template>
+
+              <template if:true={isMetaConnected}>
+                <section class="meta-modal-section meta-connected-summary">
+                  <div class="meta-connected-heading">
+                    <lightning-icon
+                      icon-name="utility:success"
+                      alternative-text="Connected"
+                      size="small"
+                    ></lightning-icon>
+                    <div>
+                      <h3>{metaConnectionLabel}</h3>
+                      <p>Automatic collection runs every three hours.</p>
+                    </div>
+                  </div>
+                  <h4>Facebook Pages</h4>
+                  <ul>
+                    <template for:each={connectedFacebookPages} for:item="page">
+                      <li key={page.pageId}>{page.pageName}</li>
+                    </template>
+                  </ul>
+                  <template if:true={hasConnectedInstagramAccounts}>
+                    <h4>Instagram Professional accounts</h4>
+                    <ul>
+                      <template
+                        for:each={connectedInstagramAccounts}
+                        for:item="account"
+                      >
+                        <li key={account.accountId}>@{account.username}</li>
+                      </template>
+                    </ul>
+                  </template>
+                </section>
+              </template>
+            </div>
+
+            <footer class="slds-modal__footer meta-modal-footer">
+              <template if:true={showMetaPrerequisites}>
+                <lightning-button
+                  variant="brand"
+                  label="Connect with Meta"
+                  icon-name="utility:new_window"
+                  disabled={isMetaConnectDisabled}
+                  onclick={handleStartMetaConnection}
+                ></lightning-button>
+              </template>
+              <template if:true={isMetaPendingSelection}>
+                <lightning-button
+                  variant="neutral"
+                  label="Refresh"
+                  disabled={isMetaLoading}
+                  onclick={refreshMetaConnection}
+                ></lightning-button>
+                <lightning-button
+                  variant="brand"
+                  label="Start monitoring selected accounts"
+                  disabled={isMetaSelectionDisabled}
+                  onclick={handleSaveMetaSelection}
+                ></lightning-button>
+              </template>
+              <template if:true={isMetaConnected}>
+                <lightning-button
+                  variant="destructive-text"
+                  label="Disconnect"
+                  disabled={isMetaLoading}
+                  onclick={handleDisconnectMeta}
+                ></lightning-button>
+                <lightning-button
+                  variant="brand-outline"
+                  label="Reconnect or change accounts"
+                  disabled={isMetaLoading}
+                  onclick={handlePrepareMetaReconnect}
+                ></lightning-button>
+              </template>
+            </footer>
+          </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+      </template>
     </template>
   </main>
 </template>

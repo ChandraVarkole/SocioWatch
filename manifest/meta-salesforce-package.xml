@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>SocioWatchApiClient</members>
+        <members>SocioWatchConstants</members>
+        <members>SocioWatchMetaConnectionResponse</members>
+        <members>SocioWatchMetaController</members>
+        <members>SocioWatchMetaService</members>
+        <members>SocioWatchMetaServiceTest</members>
+        <name>ApexClass</name>
+    </types>
+    <types>
+        <members>socioWatchSettings</members>
+        <name>LightningComponentBundle</name>
+    </types>
+    <types>
+        <members>SocioWatch_Mention__c.Facebook_Mentions</members>
+        <members>SocioWatch_Mention__c.Instagram_Mentions</members>
+        <name>ListView</name>
+    </types>
+    <types>
+        <members>SocioWatch_Admin</members>
+        <name>PermissionSet</name>
+    </types>
+    <version>67.0</version>
+</Package>

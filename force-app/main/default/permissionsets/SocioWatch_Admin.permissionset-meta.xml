@@ -37,6 +37,11 @@
         <enabled>true</enabled>
     </classAccesses>
 
+    <classAccesses>
+        <apexClass>SocioWatchMetaController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+
     <customPermissions>
         <enabled>true</enabled>
         <name>SocioWatch_Manage_Settings</name>
