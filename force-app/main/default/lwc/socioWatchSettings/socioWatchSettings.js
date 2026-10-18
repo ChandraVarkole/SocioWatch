@@ -95,6 +95,7 @@ export default class SocioWatchSettings extends LightningElement {
   metaAvailablePages = [];
   metaSelectedPageIds = [];
   metaConnection;
+  metaHasStoredConnection = false;
   confirmsFacebookPage = false;
   confirmsFacebookControl = false;
   confirmsInstagramProfessional = false;
@@ -608,6 +609,8 @@ export default class SocioWatchSettings extends LightningElement {
 
   applyMetaConnection(response) {
     this.metaStatus = response?.status || "NOT_CONNECTED";
+    this.metaHasStoredConnection =
+      response?.hasStoredConnection === true || Boolean(response?.connection);
     this.metaMonitoringMode =
       response?.monitoringMode ||
       response?.connection?.monitoringMode ||
@@ -763,10 +766,11 @@ export default class SocioWatchSettings extends LightningElement {
   }
 
   async handleDisconnectMeta() {
+    const addOnWasRequired = this.metaStatus === "ADD_ON_REQUIRED";
     const confirmed = await LightningConfirm.open({
       label: "Disconnect Facebook and Instagram?",
       message:
-        "SocioWatch will revoke the connection and stop future Meta collection. Existing mention records remain available.",
+        "SocioWatch will revoke the connection, delete its stored credentials, and stop future Meta collection. Existing mention records remain available.",
       theme: "warning"
     });
     if (!confirmed) {
@@ -777,11 +781,18 @@ export default class SocioWatchSettings extends LightningElement {
     try {
       const response = await disconnectMeta();
       this.applyMetaConnection(response);
+      if (addOnWasRequired) {
+        this.metaStatus = "ADD_ON_REQUIRED";
+      }
       this.resetMetaConfirmations();
       this.dispatchEvent(
         new ShowToastEvent({
-          title: "Meta monitoring disconnected",
-          message: "Facebook and Instagram collection has stopped.",
+          title: addOnWasRequired
+            ? "Previous Meta connection removed"
+            : "Meta monitoring disconnected",
+          message: addOnWasRequired
+            ? "The stored Meta credentials were removed. Existing mention records remain available."
+            : "Facebook and Instagram collection has stopped.",
           variant: "success"
         })
       );

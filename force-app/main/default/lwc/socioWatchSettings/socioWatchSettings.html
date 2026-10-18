@@ -90,11 +90,23 @@
               <span>Instagram Professional</span>
             </div>
           </div>
-          <a
-            href="mailto:contact@getsociowatch.com?subject=SocioWatch%20Meta%20Monitoring%20Add-on"
-          >
-            Contact SocioWatch for paid add-on
-          </a>
+          <div class="meta-addon-actions">
+            <a
+              href="mailto:contact@getsociowatch.com?subject=SocioWatch%20Meta%20Monitoring%20Add-on"
+            >
+              Contact SocioWatch for paid add-on
+            </a>
+            <template if:true={metaHasStoredConnection}>
+              <button
+                type="button"
+                class="meta-addon-remove"
+                disabled={isMetaLoading}
+                onclick={handleDisconnectMeta}
+              >
+                Remove previous Meta connection
+              </button>
+            </template>
+          </div>
         </section>
       </template>
 
