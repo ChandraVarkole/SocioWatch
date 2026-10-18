@@ -85,6 +85,46 @@
         </section>
       </template>
 
+      <template if:true={showMetaAddOnBanner}>
+        <section class="meta-addon-banner" aria-labelledby="meta-addon-title">
+          <div class="meta-addon-copy">
+            <p class="meta-addon-eyebrow">OPTIONAL PAID ADD-ON</p>
+            <h2 id="meta-addon-title">Facebook &amp; Instagram Monitoring</h2>
+            <p>
+              Monitor selected business posts and comments in SocioWatch and
+              keep the original source links. SocioWatch uses read-only access
+              and never publishes, edits, hides, deletes, or replies.
+            </p>
+            <div class="meta-addon-tags" aria-label="Supported channels">
+              <span>Facebook Pages</span>
+              <span>Instagram Professional</span>
+            </div>
+          </div>
+          <div class="meta-addon-actions">
+            <a
+              class="meta-addon-contact"
+              href="mailto:contact@getsociowatch.com?subject=SocioWatch%20Meta%20Monitoring%20Add-on"
+            >
+              Contact SocioWatch for paid add-on
+            </a>
+            <button
+              class="meta-addon-remind"
+              type="button"
+              onclick={handleRemindMetaAddOn}
+            >
+              Remind me in 7 days
+            </button>
+            <button
+              class="meta-addon-dismiss"
+              type="button"
+              onclick={handleDismissMetaAddOn}
+            >
+              Don’t show again
+            </button>
+          </div>
+        </section>
+      </template>
+
       <section class="kpi-grid" aria-label="Key performance indicators">
         <article class="kpi-card kpi-volume">
           <div class="kpi-icon">

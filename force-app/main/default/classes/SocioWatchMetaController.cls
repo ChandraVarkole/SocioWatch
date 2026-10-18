@@ -13,6 +13,15 @@ public with sharing class SocioWatchMetaController {
   }
 
   @AuraEnabled
+  public static String getOfferStatus() {
+    try {
+      return SocioWatchMetaService.getOfferStatus();
+    } catch (Exception error) {
+      throw handled(error);
+    }
+  }
+
+  @AuraEnabled
   public static SocioWatchMetaConnectionResponse startConnection(
     String monitoringMode,
     String returnOrigin

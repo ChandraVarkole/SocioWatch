@@ -135,6 +135,110 @@
   font-weight: 700;
 }
 
+.meta-addon-banner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(15rem, 20rem);
+  gap: 2rem;
+  max-width: 90rem;
+  margin: 0 auto 1rem;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  background: linear-gradient(112deg, #17182a 0%, #2d2866 58%, #5142dc 100%);
+  box-shadow: 0 12px 30px rgba(37, 31, 92, 0.18);
+  color: #fff;
+}
+
+.meta-addon-copy h2,
+.meta-addon-copy p {
+  margin: 0;
+}
+
+.meta-addon-copy h2 {
+  margin-bottom: 0.55rem;
+  font-size: 1.4rem;
+  font-weight: 800;
+}
+
+.meta-addon-copy > p:not(.meta-addon-eyebrow) {
+  max-width: 60rem;
+  color: #dcdaee;
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.meta-addon-eyebrow {
+  margin-bottom: 0.35rem !important;
+  color: #c5beff;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+}
+
+.meta-addon-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 1rem;
+}
+
+.meta-addon-tags span {
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.meta-addon-actions {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.55rem;
+}
+
+.meta-addon-contact,
+.meta-addon-remind,
+.meta-addon-dismiss {
+  box-sizing: border-box;
+  width: 100%;
+  border-radius: 0.75rem;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 800;
+  text-align: center;
+  cursor: pointer;
+}
+
+.meta-addon-contact {
+  padding: 0.8rem 1rem;
+  background: #fff;
+  color: var(--brand-dark);
+  text-decoration: none;
+}
+
+.meta-addon-remind {
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  background: transparent;
+  color: #fff;
+}
+
+.meta-addon-dismiss {
+  padding: 0.35rem 1rem;
+  border: 0;
+  background: transparent;
+  color: #d5d2ec;
+  font-weight: 600;
+}
+
+.meta-addon-contact:focus-visible,
+.meta-addon-remind:focus-visible,
+.meta-addon-dismiss:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
 .kpi-grid,
 .insight-grid,
 .panel,
@@ -670,6 +774,15 @@
 
   .mention-grid {
     grid-template-columns: 1fr;
+  }
+
+  .meta-addon-banner {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .meta-addon-actions {
+    max-width: 24rem;
   }
 }
 

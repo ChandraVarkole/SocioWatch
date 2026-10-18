@@ -14,8 +14,23 @@ public with sharing class SocioWatchMetaService {
   public static SocioWatchMetaConnectionResponse getConnection() {
     return sendRequest(
       SocioWatchConstants.META_STATUS_ENDPOINT,
-      new Map<String, Object>()
+      new Map<String, Object>(),
+      true
     );
+  }
+
+  /**
+   * Returns only the entitlement state needed by the Overview add-on offer.
+   * Standard users may see the offer, but managing the connection remains
+   * restricted to users with the Manage Settings custom permission.
+   */
+  public static String getOfferStatus() {
+    SocioWatchMetaConnectionResponse response = sendRequest(
+      SocioWatchConstants.META_STATUS_ENDPOINT,
+      new Map<String, Object>(),
+      false
+    );
+    return String.isBlank(response.status) ? 'NOT_CONNECTED' : response.status;
   }
 
   public static SocioWatchMetaConnectionResponse startConnection(
@@ -30,7 +45,8 @@ public with sharing class SocioWatchMetaService {
         'monitoringMode' => normalizedMode,
         'returnOrigin' => normalizedOrigin,
         'acknowledgementVersion' => SocioWatchConstants.META_ACKNOWLEDGEMENT_VERSION
-      }
+      },
+      true
     );
   }
 
@@ -43,22 +59,27 @@ public with sharing class SocioWatchMetaService {
       new Map<String, Object>{
         'facebookPageIds' => normalizedPageIds,
         'acknowledgementVersion' => SocioWatchConstants.META_ACKNOWLEDGEMENT_VERSION
-      }
+      },
+      true
     );
   }
 
   public static SocioWatchMetaConnectionResponse disconnect() {
     return sendRequest(
       SocioWatchConstants.META_DISCONNECT_ENDPOINT,
-      new Map<String, Object>()
+      new Map<String, Object>(),
+      true
     );
   }
 
   private static SocioWatchMetaConnectionResponse sendRequest(
     String endpoint,
-    Map<String, Object> requestValues
+    Map<String, Object> requestValues,
+    Boolean requireManagementPermission
   ) {
-    SocioWatchPermissionService.requireManageSettings();
+    if (requireManagementPermission) {
+      SocioWatchPermissionService.requireManageSettings();
+    }
     SocioWatch_Configuration__c configuration = getConfiguration();
 
     requestValues.put('companyId', configuration.AWS_Company_Id__c);

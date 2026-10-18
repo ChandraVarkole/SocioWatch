@@ -10,6 +10,7 @@
         <name>ApexClass</name>
     </types>
     <types>
+        <members>socioWatchOverview</members>
         <members>socioWatchSettings</members>
         <name>LightningComponentBundle</name>
     </types>
@@ -20,6 +21,7 @@
     </types>
     <types>
         <members>SocioWatch_Admin</members>
+        <members>SocioWatch_User</members>
         <name>PermissionSet</name>
     </types>
     <version>67.0</version>

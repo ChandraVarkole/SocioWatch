@@ -4,8 +4,13 @@ import { refreshApex } from "@salesforce/apex";
 import LightningConfirm from "lightning/confirm";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import getDashboard from "@salesforce/apex/SocioWatchDashboardController.getDashboard";
+import getMetaOfferStatus from "@salesforce/apex/SocioWatchMetaController.getOfferStatus";
 import markNotRelevant from "@salesforce/apex/SocioWatchMentionFeedbackController.markNotRelevant";
 import SOCIOWATCH_LOGO from "@salesforce/resourceUrl/SocioWatchLogoHorizontal";
+import USER_ID from "@salesforce/user/Id";
+
+const META_ADD_ON_PREFERENCE_KEY = `sociowatch-meta-addon-offer-${USER_ID}`;
+const ONE_WEEK_IN_MILLISECONDS = 7 * 24 * 60 * 60 * 1000;
 
 const SOURCE_VISUALS = {
   x: { symbol: "X", className: "source-badge source-x" },
@@ -33,6 +38,8 @@ export default class SocioWatchOverview extends NavigationMixin(
   errorMessage;
   isRefreshing = false;
   feedbackMentionId;
+  metaOfferStatus;
+  metaOfferHidden = false;
 
   periodOptions = [
     { label: "Last 7 days", value: "7" },
@@ -40,6 +47,11 @@ export default class SocioWatchOverview extends NavigationMixin(
     { label: "Last 90 days", value: "90" },
     { label: "All time", value: "0" }
   ];
+
+  connectedCallback() {
+    this.loadMetaOfferPreference();
+    this.loadMetaOfferStatus();
+  }
 
   @wire(getDashboard, { days: "$days" })
   wiredDashboard(result) {
@@ -69,6 +81,10 @@ export default class SocioWatchOverview extends NavigationMixin(
 
   get showTrialBanner() {
     return this.dashboard?.showTrialBanner !== false;
+  }
+
+  get showMetaAddOnBanner() {
+    return this.metaOfferStatus === "ADD_ON_REQUIRED" && !this.metaOfferHidden;
   }
 
   get trialDaysRemaining() {
@@ -151,6 +167,18 @@ export default class SocioWatchOverview extends NavigationMixin(
     } finally {
       this.isRefreshing = false;
     }
+  }
+
+  handleRemindMetaAddOn() {
+    this.saveMetaOfferPreference({
+      remindAfter: Date.now() + ONE_WEEK_IN_MILLISECONDS
+    });
+    this.metaOfferHidden = true;
+  }
+
+  handleDismissMetaAddOn() {
+    this.saveMetaOfferPreference({ dismissed: true });
+    this.metaOfferHidden = true;
   }
 
   openAllMentions() {
@@ -292,6 +320,49 @@ export default class SocioWatchOverview extends NavigationMixin(
       return value;
     }
     return `${value.slice(0, length).trim()}…`;
+  }
+
+  async loadMetaOfferStatus() {
+    try {
+      this.metaOfferStatus = await getMetaOfferStatus();
+    } catch {
+      // The add-on offer must never prevent the Overview from loading.
+      this.metaOfferStatus = undefined;
+    }
+  }
+
+  loadMetaOfferPreference() {
+    try {
+      const storedValue = window.localStorage.getItem(
+        META_ADD_ON_PREFERENCE_KEY
+      );
+      if (!storedValue) {
+        return;
+      }
+
+      const preference = JSON.parse(storedValue);
+      if (
+        preference.dismissed === true ||
+        Number(preference.remindAfter || 0) > Date.now()
+      ) {
+        this.metaOfferHidden = true;
+      } else {
+        window.localStorage.removeItem(META_ADD_ON_PREFERENCE_KEY);
+      }
+    } catch {
+      this.metaOfferHidden = false;
+    }
+  }
+
+  saveMetaOfferPreference(preference) {
+    try {
+      window.localStorage.setItem(
+        META_ADD_ON_PREFERENCE_KEY,
+        JSON.stringify(preference)
+      );
+    } catch {
+      // Hiding still works for the current page when storage is unavailable.
+    }
   }
 
   extractError(error) {

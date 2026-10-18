@@ -1,6 +1,7 @@
 @IsTest
 private class SocioWatchMetaServiceTest {
   private static final String ADMIN_ALIAS = 'swmeta';
+  private static final String USER_ALIAS = 'swuser';
   private static final String COMPANY_ID = 'sw_meta_company';
 
   @TestSetup
@@ -9,6 +10,51 @@ private class SocioWatchMetaServiceTest {
       ADMIN_ALIAS,
       'SocioWatch_Admin'
     );
+    SocioWatchTestUserFactory.createUserWithPermissionSet(
+      USER_ALIAS,
+      'SocioWatch_User'
+    );
+  }
+
+  @IsTest
+  static void standardUserCanSeeOfferButCannotManageConnection() {
+    User adminUser = SocioWatchTestUserFactory.getUser(ADMIN_ALIAS);
+    System.runAs(adminUser) {
+      insertConfiguration();
+    }
+
+    User standardUser = SocioWatchTestUserFactory.getUser(USER_ALIAS);
+    System.runAs(standardUser) {
+      Test.setMock(
+        HttpCalloutMock.class,
+        new MetaHttpMock(
+          SocioWatchConstants.META_STATUS_ENDPOINT,
+          '{"status":"ADD_ON_REQUIRED"}'
+        )
+      );
+
+      Test.startTest();
+      System.assertEquals(
+        'ADD_ON_REQUIRED',
+        SocioWatchMetaController.getOfferStatus()
+      );
+      try {
+        SocioWatchMetaController.startConnection(
+          'FACEBOOK',
+          'https://example.lightning.force.com'
+        );
+        System.assert(
+          false,
+          'Standard users must not manage Meta connections.'
+        );
+      } catch (AuraHandledException error) {
+        System.assertEquals(
+          'You do not have permission to perform this SocioWatch operation.',
+          error.getMessage()
+        );
+      }
+      Test.stopTest();
+    }
   }
 
   @IsTest
